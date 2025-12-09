@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TripCraft - Plan smarter trips in minutes with AI.">
+  <title>TripCraft - AI Trip Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="#" class="logo">
+        <span class="logo-icon">✈️</span>
+        <span>TripCraft</span>
+      </a>
+      <button class="btn btn-secondary" id="newTripBtn" style="display: none;">+ New Trip</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero - Compact -->
+    <section class="hero" id="heroSection">
+      <h1 class="hero-title">Plan Your Perfect Trip <span>in Minutes</span></h1>
+      <p class="hero-subtitle">Describe your trip or use our smart options. Get a personalized itinerary instantly.</p>
+    </section>
+
+    <!-- Input Section - Compact Grid -->
+    <section class="input-section container" id="inputSection">
+      <!-- Main Input Row -->
+      <div class="main-input-row">
+        <textarea class="main-textarea" id="tripDescription"
+          placeholder="Describe your trip: '3-day romantic Kyoto trip, love food and temples...'"></textarea>
+      </div>
+
+      <!-- Compact Panels Grid -->
+      <div class="panels-grid">
+        <!-- Trip Basics -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">📍</span>
+            <h3 class="panel-title">Basics</h3>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Destination</label>
+            <input type="text" class="input-field" id="destination" placeholder="City or country..."
+              list="destinations">
+            <datalist id="destinations">
+              <option value="Tokyo, Japan">
+              <option value="Kyoto, Japan">
+              <option value="Osaka, Japan">
+              <option value="Paris, France">
+              <option value="Copenhagen, Denmark">
+              <option value="Barcelona, Spain">
+              <option value="Bali, Indonesia">
+            </datalist>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Nationality</label>
+            <select class="input-field" id="nationality">
+              <option value="">Select your nationality...</option>
+              <option value="US">🇺🇸 United States</option>
+              <option value="UK">🇬🇧 United Kingdom</option>
+              <option value="AU">🇦🇺 Australia</option>
+              <option value="CA">🇨🇦 Canada</option>
+              <option value="SG">🇸🇬 Singapore</option>
+              <option value="JP">🇯🇵 Japan</option>
+              <option value="KR">🇰🇷 South Korea</option>
+              <option value="CN">🇨🇳 China</option>
+              <option value="IN">🇮🇳 India</option>
+              <option value="TH">🇹🇭 Thailand</option>
+              <option value="DE">🇩🇪 Germany</option>
+              <option value="FR">🇫🇷 France</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="inline-row mb-2">
+            <div class="input-group" style="flex:1">
+              <label class="input-label">Days</label>
+              <div class="counter">
+                <button class="counter-btn" data-action="decrease" data-target="tripDays">−</button>
+                <span class="counter-value" id="tripDays">3</span>
+                <button class="counter-btn" data-action="increase" data-target="tripDays">+</button>
+              </div>
+            </div>
+            <div class="input-group" style="flex:1">
+              <label class="input-label">Travelers</label>
+              <div class="counter">
+                <button class="counter-btn" data-action="decrease" data-target="adults">−</button>
+                <span class="counter-value" id="adults">2</span>
+                <button class="counter-btn" data-action="increase" data-target="adults">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Trip Type</label>
+            <div class="chip-group" id="tripTypeChips">
+              <button class="chip" data-value="couple">💑 Couple</button>
+              <button class="chip" data-value="family">👨‍👩‍👧 Family</button>
+              <button class="chip" data-value="solo">🎒 Solo</button>
+              <button class="chip" data-value="friends">👯 Friends</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget & Style -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">💰</span>
+            <h3 class="panel-title">Budget & Style</h3>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Budget (per person)</label>
+            <div class="chip-group" id="budgetChips">
+              <button class="chip" data-value="500">$500</button>
+              <button class="chip active" data-value="1000">$1,000</button>
+              <button class="chip" data-value="2000">$2,000</button>
+              <button class="chip" data-value="3000">$3,000</button>
+              <button class="chip" data-value="5000">$5,000+</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Travel Style</label>
+            <div class="chip-group" id="styleChips">
+              <button class="chip" data-value="culture">🏛️ Culture</button>
+              <button class="chip" data-value="food">🍜 Food</button>
+              <button class="chip" data-value="nature">🌲 Nature</button>
+              <button class="chip" data-value="shopping">🛍️ Shopping</button>
+              <button class="chip" data-value="relax">🧘 Relax</button>
+              <button class="chip" data-value="photos">📸 Photo</button>
+            </div>
+          </div>
+          <div class="input-group mt-2">
+            <label class="input-label">Pace</label>
+            <div class="chip-group" id="paceChips">
+              <button class="chip" data-value="chill">🐢 Chill</button>
+              <button class="chip active" data-value="normal">⚖️ Normal</button>
+              <button class="chip" data-value="packed">🚀 Packed</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Food & Diet -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">🍽️</span>
+            <h3 class="panel-title">Food & Diet</h3>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Cuisine Interests</label>
+            <div class="chip-group" id="cuisineChips">
+              <button class="chip" data-value="local">🍱 Local</button>
+              <button class="chip" data-value="street">🥟 Street Food</button>
+              <button class="chip" data-value="fine">🍷 Fine Dining</button>
+              <button class="chip" data-value="cafe">☕ Cafés</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Restrictions</label>
+            <div class="chip-group" id="dietChips">
+              <button class="chip" data-value="vegetarian">🥬 Vegetarian</button>
+              <button class="chip" data-value="vegan">🌱 Vegan</button>
+              <button class="chip" data-value="halal">🥩 Halal</button>
+              <button class="chip" data-value="gluten-free">🌾 Gluten-Free</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accommodation -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">🏨</span>
+            <h3 class="panel-title">Accommodation</h3>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Type</label>
+            <div class="chip-group" id="accomTypeChips">
+              <button class="chip" data-value="hotel">🏨 Hotel</button>
+              <button class="chip" data-value="hostel">🛏️ Hostel</button>
+              <button class="chip" data-value="apartment">🏠 Apartment</button>
+              <button class="chip" data-value="traditional">🏯 Traditional</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Location</label>
+            <div class="chip-group" id="accomLocChips">
+              <button class="chip" data-value="central">🏙️ Central</button>
+              <button class="chip" data-value="trendy">✨ Trendy Area</button>
+              <button class="chip" data-value="quiet">🌿 Quiet</button>
+              <button class="chip" data-value="transit">🚇 Near Transit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second Row: Must Have / Avoid -->
+      <div class="panels-grid" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">✅</span>
+            <h3 class="panel-title">Must Include</h3>
+          </div>
+          <div class="chip-group" id="mustHaveChips">
+            <button class="chip" data-value="landmark">🗼 Iconic Landmark</button>
+            <button class="chip" data-value="market">🏪 Local Market</button>
+            <button class="chip" data-value="sunset">🌅 Sunset View</button>
+            <button class="chip" data-value="free-time">😌 Free Time</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">❌</span>
+            <h3 class="panel-title">Prefer to Avoid</h3>
+          </div>
+          <div class="chip-group" id="avoidChips">
+            <button class="chip" data-value="crowds">👥 Crowds</button>
+            <button class="chip" data-value="party">🎉 Party Scenes</button>
+            <button class="chip" data-value="bus">🚌 Long Bus Rides</button>
+            <button class="chip" data-value="early">⏰ Early Mornings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate CTA -->
+      <div class="cta-section">
+        <button class="btn btn-primary generate-btn" id="generateBtn" disabled>
+          Generate My Itinerary
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Itinerary Section -->
+    <section class="itinerary-section container" id="itinerarySection">
+      <!-- Header with Group Invite -->
+      <div class="itinerary-header">
+        <div>
+          <h2 class="itinerary-title" id="itineraryTitle">Your Kyoto Adventure</h2>
+          <div class="itinerary-meta">
+            <span>📅 <span id="itineraryDays">3 Days</span></span>
+            <span>👥 <span id="itineraryTravelers">2 Adults</span></span>
+            <span>💰 <span id="itineraryBudget">$2,000</span></span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="inviteGroupBtn">👥 Invite Group</button>
+          <button class="btn btn-secondary" id="editPrefsBtn">✏️ Edit</button>
+        </div>
+      </div>
+
+      <!-- Special Events Banner -->
+      <div class="events-banner" id="eventsBanner">
+        <div class="events-header">
+          <span class="events-icon">🎉</span>
+          <span class="events-title">Special Events During Your Trip</span>
+        </div>
+        <div class="events-list" id="eventsList">
+          <!-- Generated dynamically -->
+        </div>
+      </div>
+
+      <!-- Trip Info Cards -->
+      <div class="trip-info-cards">
+        <div class="info-card" id="visaCard">
+          <div class="info-card-icon">🛂</div>
+          <div class="info-card-content">
+            <div class="info-card-label">Visa Cost</div>
+            <div class="info-card-value" id="visaCost">$0</div>
+            <div class="info-card-note" id="visaNote">Visa-free entry</div>
+          </div>
+        </div>
+        <div class="info-card" id="weatherCard">
+          <div class="info-card-icon">🌤️</div>
+          <div class="info-card-content">
+            <div class="info-card-label">Weather Forecast</div>
+            <div class="info-card-value" id="weatherTemp">12-18°C</div>
+            <div class="info-card-note" id="weatherNote">Mostly sunny, light rain possible</div>
+          </div>
+        </div>
+        <div class="info-card total-cost-card" id="totalCostCard">
+          <div class="info-card-icon">💵</div>
+          <div class="info-card-content">
+            <div class="info-card-label">Est. Total Cost</div>
+            <div class="info-card-value" id="totalCost">$1,850</div>
+            <div class="info-card-note">Per person</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost Breakdown -->
+      <div class="cost-breakdown-section" id="costBreakdown">
+        <h3>💰 Cost Breakdown</h3>
+        <div class="cost-bars">
+          <div class="cost-bar-item">
+            <div class="cost-bar-label"><span>✈️ Flights</span><span id="flightCostDisplay">$650</span></div>
+            <div class="cost-bar">
+              <div class="cost-bar-fill flight-bar" style="width: 35%"></div>
+            </div>
+          </div>
+          <div class="cost-bar-item">
+            <div class="cost-bar-label"><span>🏨 Hotels</span><span id="hotelCostDisplay">$540</span></div>
+            <div class="cost-bar">
+              <div class="cost-bar-fill hotel-bar" style="width: 29%"></div>
+            </div>
+          </div>
+          <div class="cost-bar-item">
+            <div class="cost-bar-label"><span>🎫 Activities</span><span id="activitiesCostDisplay">$180</span></div>
+            <div class="cost-bar">
+              <div class="cost-bar-fill activities-bar" style="width: 10%"></div>
+            </div>
+          </div>
+          <div class="cost-bar-item">
+            <div class="cost-bar-label"><span>🍽️ Meals</span><span id="mealsCostDisplay">$300</span></div>
+            <div class="cost-bar">
+              <div class="cost-bar-fill meals-bar" style="width: 16%"></div>
+            </div>
+          </div>
+          <div class="cost-bar-item">
+            <div class="cost-bar-label"><span>🚕 Transport</span><span id="transportCostDisplay">$180</span></div>
+            <div class="cost-bar">
+              <div class="cost-bar-fill transport-bar" style="width: 10%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flight Selection -->
+      <div class="flight-section" id="flightSection">
+        <h3>✈️ Flight Options</h3>
+        <div class="flight-cards" id="flightCards">
+          <!-- Generated dynamically -->
+        </div>
+      </div>
+
+      <!-- Hotel Selection -->
+      <div class="hotel-section">
+        <h3>🏨 Choose Your Stay</h3>
+        <div class="hotel-cards" id="hotelCards">
+          <!-- Generated dynamically -->
+        </div>
+      </div>
+
+      <!-- Trip Map -->
+      <div class="trip-map-section">
+        <h3>🗺️ Trip Overview Map</h3>
+        <div class="trip-map" id="tripMap">
+          <div class="map-illustration">
+            <svg viewBox="0 0 400 250" class="map-svg" id="mapSvg">
+              <!-- Map will be rendered dynamically -->
+            </svg>
+          </div>
+          <div class="map-legend" id="mapLegend">
+            <!-- Legend generated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Tabs -->
+      <div class="day-tabs" id="dayTabs"></div>
+
+      <!-- Day Contents -->
+      <div id="dayContents"></div>
+    </section>
+  </main>
+
+  <!-- Detail Panel -->
+  <div class="detail-overlay" id="detailOverlay"></div>
+  <aside class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <h3>Activity Details</h3>
+      <button class="detail-close" id="detailClose">✕</button>
+    </div>
+    <div class="detail-content" id="detailContent"></div>
+    <div class="detail-actions">
+      <button class="btn btn-secondary" id="removeActivityBtn">Remove</button>
+      <button class="btn btn-primary" id="keepActivityBtn">Keep</button>
+    </div>
+  </aside>
+
+  <!-- Chat -->
+  <button class="chat-toggle" id="chatToggle">💬</button>
+  <div class="chat-container" id="chatContainer">
+    <div class="chat-panel">
+      <div class="chat-header">
+        <h4>🪄 Refine Trip</h4>
+        <button class="chat-minimize" id="chatMinimize">−</button>
+      </div>
+      <div class="chat-tabs">
+        <button class="chat-tab active" data-tab="chat">Chat</button>
+        <button class="chat-tab" data-tab="history">History</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-message assistant">
+          <div class="message-bubble">Hi! Try "Make Day 2 lighter" or "Add more food spots."</div>
+        </div>
+      </div>
+      <div class="history-list hidden" id="historyList">
+        <!-- Chat history items -->
+      </div>
+      <div class="chat-suggestions">
+        <p>Quick:</p>
+        <div class="suggestion-chips">
+          <button class="suggestion-chip">Less busy</button>
+          <button class="suggestion-chip">More food</button>
+          <button class="suggestion-chip">More scenic</button>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask for changes...">
+        <button class="chat-send" id="chatSend">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Crafting your trip...</p>
+      <p class="loading-subtext" id="loadingSubtext">Finding best activities</p>
+    </div>
+  </div>
+
+  <!-- Group Invite Modal -->
+  <div class="modal-overlay" id="inviteModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>👥 Invite Your Group</h3>
+        <button class="modal-close" id="inviteModalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-description">Share this link with friends and family to collaborate on your trip!</p>
+        <div class="share-link-box">
+          <input type="text" class="share-link-input" id="shareLink" value="https://tripcraft.app/trip/abc123" readonly>
+          <button class="btn btn-primary copy-link-btn" id="copyLinkBtn">📋 Copy</button>
+        </div>
+        <div class="invite-email-section">
+          <label class="input-label">Or invite by email</label>
+          <div class="email-input-row">
+            <input type="email" class="input-field" id="inviteEmail" placeholder="friend@email.com">
+            <button class="btn btn-secondary">Send</button>
+          </div>
+        </div>
+        <div class="pending-invites">
+          <h4>Pending Invites</h4>
+          <div class="invite-avatars">
+            <div class="invite-avatar" title="John">J</div>
+            <div class="invite-avatar" title="Sarah">S</div>
+            <div class="invite-avatar add-more">+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/app.js"></script>
+</body>
+
+</html>
