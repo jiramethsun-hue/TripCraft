@@ -12,6 +12,7 @@ const state = {
     tripDescription: '',
     tripDays: 3,
     adults: 2,
+    startDate: '', // New: for seasonal weather/pricing
     tripType: [],
     budget: 1000, // Now numeric
     nationality: '',
@@ -29,6 +30,13 @@ const state = {
     selectedActivity: null,
     selectedHotel: null,
     selectedFlight: null,
+
+    // AI-generated data
+    aiHotels: null,
+    aiFlights: null,
+    aiEvents: null,
+    aiWeather: null,
+    aiVisa: null, // New: visa info from AI
 
     // Cost tracking
     costs: {
@@ -312,6 +320,20 @@ const activityImages = {
     'ginza': 'https://images.unsplash.com/photo-1549693578-d683be217e58?w=400&h=300&fit=crop',
     'tokyo-station': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop',
     'default': 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&h=300&fit=crop'
+};
+
+// Activity type to image mapping for AI-generated activities
+const activityTypeImages = {
+    'sightseeing': 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&h=200&fit=crop',
+    'food': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=200&fit=crop',
+    'culture': 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=200&fit=crop',
+    'shopping': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=200&fit=crop',
+    'nature': 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&h=200&fit=crop',
+    'nightlife': 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=400&h=200&fit=crop',
+    'museum': 'https://images.unsplash.com/photo-1554907984-15263bfd63bd?w=400&h=200&fit=crop',
+    'temple': 'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=400&h=200&fit=crop',
+    'beach': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=200&fit=crop',
+    'default': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=200&fit=crop'
 };
 
 // ========================================
@@ -753,6 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeCounters();
     initializeBudgetChips();
     initializeNationality();
+    initializeStartDate(); // New: for date picker
     initializeGenerateButton();
     initializeDetailPanel();
     initializeChat();
@@ -852,6 +875,25 @@ function initializeNationality() {
 }
 
 // ========================================
+// Start Date
+// ========================================
+
+function initializeStartDate() {
+    const dateInput = document.getElementById('tripStartDate');
+    if (!dateInput) return;
+
+    // Set default to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.value = tomorrow.toISOString().split('T')[0];
+    state.startDate = dateInput.value;
+
+    dateInput.addEventListener('change', () => {
+        state.startDate = dateInput.value;
+    });
+}
+
+// ========================================
 // Invite Modal
 // ========================================
 
@@ -906,28 +948,68 @@ function initializeGenerateButton() {
 // Generate Itinerary
 // ========================================
 
-function generateItinerary() {
+async function generateItinerary() {
     showLoading();
 
-    const loadingTexts = ['Analyzing preferences...', 'Finding flights...', 'Checking events...', 'Optimizing schedule...', 'Calculating costs...'];
+    const loadingTexts = ['🤖 AI analyzing preferences...', '✈️ Finding best flights...', '🎉 Checking local events...', '🗓️ Crafting your schedule...', '💰 Calculating costs...'];
     let i = 0;
     const interval = setInterval(() => {
         i = (i + 1) % loadingTexts.length;
         document.getElementById('loadingSubtext').textContent = loadingTexts[i];
-    }, 800);
+    }, 1200);
 
-    setTimeout(() => {
+    try {
+        // Prepare preferences for AI
+        const preferences = {
+            destination: state.destination || 'Japan',
+            days: state.tripDays,
+            travelers: state.adults,
+            startDate: state.startDate, // New: for seasonal weather/pricing
+            nationality: state.nationality, // New: for visa info
+            tripType: state.tripType.join(', ') || 'general',
+            budget: state.budget,
+            styles: state.travelStyle,
+            cuisines: state.cuisine,
+            dietary: state.diet,
+            accomType: state.accomType.join(', ') || 'hotel',
+            accomLocation: state.accomLoc.join(', ') || 'central',
+            mustHave: state.mustHave,
+            avoid: state.avoid,
+            pace: state.pace,
+            description: state.tripDescription
+        };
+
+        // Call Gemini AI to generate itinerary
+        const aiItinerary = await GeminiService.generateItinerary(preferences);
+
+        // Convert AI response to our format
+        state.currentItinerary = convertAIItineraryToFormat(aiItinerary);
+
+        // Reset selections for new AI data
+        state.selectedFlight = null;
+        state.selectedHotel = null;
+
+        // Store AI-generated data for other sections
+        state.aiHotels = aiItinerary.hotels || null;
+        state.aiFlights = aiItinerary.flights || null;
+        state.aiEvents = aiItinerary.specialEvents || null;
+        state.aiWeather = aiItinerary.weatherInfo || null;
+        state.aiVisa = aiItinerary.visaInfo || null; // New: visa info from AI
+
+        // Update costs from AI
+        if (aiItinerary.estimatedCosts) {
+            state.costs = {
+                flight: aiItinerary.estimatedCosts.flights || 650,
+                hotel: aiItinerary.estimatedCosts.hotels || 400,
+                activities: aiItinerary.estimatedCosts.activities || 150,
+                meals: aiItinerary.estimatedCosts.meals || 200,
+                transport: aiItinerary.estimatedCosts.transport || 100,
+                visa: aiItinerary.visaInfo?.cost || 0
+            };
+        }
+
         clearInterval(interval);
         hideLoading();
-
-        const dest = state.destination.toLowerCase();
-        let template = dest.includes('kyoto') ? sampleItineraries.kyoto : dest.includes('tokyo') ? sampleItineraries.tokyo : sampleItineraries.default;
-        state.currentItinerary = JSON.parse(JSON.stringify(template));
-
-        if (state.destination) {
-            const cityName = state.destination.split(',')[0].trim();
-            state.currentItinerary.title = `Your ${cityName} Adventure`;
-        }
 
         // Save to history
         state.tripHistory.unshift({
@@ -946,7 +1028,108 @@ function generateItinerary() {
         renderItinerary();
         updateCosts();
         showItinerarySection();
-    }, 2500);
+
+    } catch (error) {
+        console.error('AI Generation failed, using fallback:', error);
+        clearInterval(interval);
+
+        // Fallback to sample itineraries
+        const dest = state.destination.toLowerCase();
+        let template = dest.includes('kyoto') ? sampleItineraries.kyoto : dest.includes('tokyo') ? sampleItineraries.tokyo : sampleItineraries.default;
+        state.currentItinerary = JSON.parse(JSON.stringify(template));
+
+        // Dynamically expand to requested number of days
+        const requestedDays = state.tripDays || 3;
+        const baseDay = state.currentItinerary.days[0];
+        while (state.currentItinerary.days.length < requestedDays) {
+            const newDay = JSON.parse(JSON.stringify(baseDay));
+            const dayNum = state.currentItinerary.days.length + 1;
+            newDay.name = `Day ${dayNum} – Exploration`;
+            newDay.description = `Continue your ${state.destination || 'adventure'} experience`;
+            state.currentItinerary.days.push(newDay);
+        }
+
+        if (state.destination) {
+            const cityName = state.destination.split(',')[0].trim();
+            state.currentItinerary.title = `Your ${cityName} Adventure`;
+        }
+
+        hideLoading();
+
+        state.tripHistory.unshift({
+            id: Date.now(),
+            destination: state.destination || 'Custom Trip',
+            date: new Date().toLocaleDateString(),
+            messages: [...state.chatHistory]
+        });
+
+        renderEvents();
+        renderVisaAndWeather();
+        renderFlights();
+        renderHotels();
+        renderTripMap();
+        renderItinerary();
+        updateCosts();
+        showItinerarySection();
+    }
+}
+
+// Convert AI-generated itinerary to our app format
+function convertAIItineraryToFormat(aiItinerary) {
+    const days = aiItinerary.days.map((day, index) => {
+        const activities = day.activities || [];
+
+        // Split activities into time slots
+        const morning = activities.filter(a => {
+            const hour = parseInt(a.time?.split(':')[0] || '12');
+            return hour < 12;
+        });
+        const afternoon = activities.filter(a => {
+            const hour = parseInt(a.time?.split(':')[0] || '12');
+            return hour >= 12 && hour < 17;
+        });
+        const evening = activities.filter(a => {
+            const hour = parseInt(a.time?.split(':')[0] || '12');
+            return hour >= 17;
+        });
+
+        // Convert to our activity format with travel times and dynamic images
+        const convertActivity = (a) => ({
+            id: a.id || `activity-${Math.random().toString(36).substr(2, 9)}`,
+            name: a.title,
+            description: a.description,
+            duration: a.duration,
+            tags: [a.type, 'AI Generated'].filter(Boolean),
+            area: a.location || 'City Center',
+            category: a.type || 'Activity',
+            priceLevel: a.cost > 50 ? '$$$' : a.cost > 20 ? '$$' : '$',
+            hours: 'Varies',
+            goodFor: ['Everyone'],
+            rating: 4.5,
+            reviews: { positive: [a.tips || 'Great experience'], negative: [] },
+            note: a.tips,
+            travelTime: a.travelTime || '', // Travel time from previous activity
+            coordinates: a.coordinates || null, // GPS coordinates for map
+            // Use activity type to get reliable curated photos
+            imageUrl: activityTypeImages[a.type?.toLowerCase()] || activityTypeImages.default
+        });
+
+        return {
+            name: day.name,
+            description: day.description,
+            slots: {
+                morning: morning.map(convertActivity),
+                afternoon: afternoon.length ? afternoon.map(convertActivity) : [convertActivity(activities[Math.floor(activities.length / 2)] || activities[0])],
+                evening: evening.map(convertActivity)
+            }
+        };
+    });
+
+    return {
+        title: aiItinerary.title || `Your ${state.destination} Adventure`,
+        summary: aiItinerary.summary,
+        days: days
+    };
 }
 
 function showLoading() { document.getElementById('loadingOverlay').classList.add('visible'); }
@@ -957,13 +1140,19 @@ function hideLoading() { document.getElementById('loadingOverlay').classList.rem
 // ========================================
 
 function renderEvents() {
-    const dest = state.destination.toLowerCase();
-    const events = dest.includes('kyoto') ? eventsData.kyoto : dest.includes('tokyo') ? eventsData.tokyo : eventsData.default;
+    // Use AI-generated events if available, otherwise fall back to static data
+    let events;
+    if (state.aiEvents && state.aiEvents.length > 0) {
+        events = state.aiEvents;
+    } else {
+        const dest = state.destination.toLowerCase();
+        events = dest.includes('kyoto') ? eventsData.kyoto : dest.includes('tokyo') ? eventsData.tokyo : eventsData.default;
+    }
 
     const container = document.getElementById('eventsList');
     if (!container) return;
 
-    if (events.length === 0) {
+    if (!events || events.length === 0) {
         document.getElementById('eventsBanner').style.display = 'none';
         return;
     }
@@ -972,7 +1161,7 @@ function renderEvents() {
     container.innerHTML = events.map(event => `
         <div class="event-item">
             <div class="event-info">
-                <div class="event-icon">${event.icon}</div>
+                <div class="event-icon">${event.icon || '🎉'}</div>
                 <div class="event-details">
                     <h4>${event.title}</h4>
                     <p>${event.description}</p>
@@ -1001,16 +1190,29 @@ function renderVisaAndWeather() {
     const dest = state.destination.toLowerCase();
     const destKey = dest.includes('kyoto') ? 'kyoto' : dest.includes('tokyo') ? 'tokyo' : 'default';
 
-    // Visa
-    const nationalityData = visaData[state.nationality] || visaData.default;
-    const visa = nationalityData[destKey] || nationalityData;
+    // Visa - use AI-generated visa info if available, otherwise static data
+    let visa;
+    if (state.aiVisa) {
+        visa = {
+            cost: state.aiVisa.cost || 0,
+            note: state.aiVisa.note || 'Check visa requirements'
+        };
+    } else {
+        const nationalityData = visaData[state.nationality] || visaData.default;
+        visa = nationalityData[destKey] || nationalityData;
+    }
     state.costs.visa = visa.cost || 0;
 
     document.getElementById('visaCost').textContent = visa.cost > 0 ? `$${visa.cost}` : '$0';
     document.getElementById('visaNote').textContent = visa.note || 'Check visa requirements';
 
-    // Weather
-    const weather = weatherData[destKey] || weatherData.default;
+    // Weather - use AI-generated weather if available
+    let weather;
+    if (state.aiWeather) {
+        weather = state.aiWeather;
+    } else {
+        weather = weatherData[destKey] || weatherData.default;
+    }
     document.getElementById('weatherTemp').textContent = weather.temp;
     document.getElementById('weatherNote').textContent = weather.note;
 }
@@ -1020,8 +1222,14 @@ function renderVisaAndWeather() {
 // ========================================
 
 function renderFlights() {
-    const dest = state.destination.toLowerCase();
-    const flights = dest.includes('kyoto') ? flightData.kyoto : dest.includes('tokyo') ? flightData.tokyo : flightData.default;
+    // Use AI-generated flights if available, otherwise fall back to static data
+    let flights;
+    if (state.aiFlights && state.aiFlights.length > 0) {
+        flights = state.aiFlights;
+    } else {
+        const dest = state.destination.toLowerCase();
+        flights = dest.includes('kyoto') ? flightData.kyoto : dest.includes('tokyo') ? flightData.tokyo : flightData.default;
+    }
 
     const container = document.getElementById('flightCards');
     if (!container) return;
@@ -1041,14 +1249,14 @@ function renderFlights() {
                 <span>Arrive: ${flight.arrival}</span>
             </div>
             <div class="flight-pros-cons">
-                ${flight.pros.map(p => `<span class="flight-pro">✓ ${p}</span>`).join('')}
-                ${flight.cons.map(c => `<span class="flight-con">✗ ${c}</span>`).join('')}
+                ${(flight.pros || []).map(p => `<span class="flight-pro">✓ ${p}</span>`).join('')}
+                ${(flight.cons || []).map(c => `<span class="flight-con">✗ ${c}</span>`).join('')}
             </div>
         </div>
     `).join('');
 
     // Auto-select cheapest
-    if (!state.selectedFlight) {
+    if (!state.selectedFlight && flights.length > 0) {
         const cheapest = flights.reduce((a, b) => a.price < b.price ? a : b);
         state.selectedFlight = cheapest.id;
         state.costs.flight = cheapest.price;
@@ -1068,47 +1276,183 @@ function renderFlights() {
 }
 
 // ========================================
-// Render Trip Map
+// Render Trip Map (Leaflet.js)
 // ========================================
 
+// Store map instance globally so we can destroy it on re-render
+let tripMap = null;
+
 function renderTripMap() {
-    const mapSvg = document.getElementById('mapSvg');
+    const mapContainer = document.getElementById('leafletMap');
     const legend = document.getElementById('mapLegend');
-    if (!mapSvg || !legend) return;
+    if (!mapContainer || !legend) return;
+
+    // Destroy existing map if present
+    if (tripMap) {
+        tripMap.remove();
+        tripMap = null;
+    }
 
     const days = state.currentItinerary?.days || [];
-    const colors = ['#60a5fa', '#34d399', '#f472b6', '#fbbf24', '#a78bfa'];
+    const colors = ['#3b82f6', '#10b981', '#ec4899', '#f59e0b', '#8b5cf6'];
 
-    // Simple illustrated map
-    let svgContent = `
-        <defs>
-            <pattern id="mapPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-                <circle cx="10" cy="10" r="1" fill="#ccc" opacity="0.3"/>
-            </pattern>
-        </defs>
-        <rect width="400" height="250" fill="url(#mapPattern)"/>
-        <path d="M50,200 Q100,150 150,180 T250,160 T350,190" stroke="#a8d5ba" stroke-width="3" fill="none" opacity="0.6"/>
-        <ellipse cx="200" cy="125" rx="120" ry="80" fill="#e8f4f0" stroke="#c8e0d8" stroke-width="2"/>
-        <text x="200" y="60" text-anchor="middle" font-size="12" fill="#666" font-weight="500">${state.destination || 'Your Destination'}</text>
-    `;
+    // Default coordinates for common destinations (fallback)
+    const destinationCoords = {
+        'kyoto': [35.0116, 135.7681],
+        'tokyo': [35.6762, 139.6503],
+        'osaka': [34.6937, 135.5023],
+        'paris': [48.8566, 2.3522],
+        'barcelona': [41.3874, 2.1686],
+        'bali': [-8.4095, 115.1889],
+        'copenhagen': [55.6761, 12.5683],
+        'rome': [41.9028, 12.4964],
+        'london': [51.5074, -0.1278],
+        'new york': [40.7128, -74.0060],
+        'singapore': [1.3521, 103.8198],
+        'bangkok': [13.7563, 100.5018],
+        'default': [35.0116, 135.7681] // Kyoto as default
+    };
 
-    // Add location dots for each day
-    days.forEach((day, i) => {
-        const x = 80 + (i * 100);
-        const y = 100 + (i % 2 ? 30 : 0);
-        svgContent += `
-            <circle cx="${x}" cy="${y}" r="14" fill="${colors[i % colors.length]}" opacity="0.8"/>
-            <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="10" fill="white" font-weight="600">${i + 1}</text>
-        `;
+    // Get center coordinates based on destination
+    const dest = (state.destination || '').toLowerCase();
+    let centerCoords = destinationCoords.default;
+    for (const [key, coords] of Object.entries(destinationCoords)) {
+        if (dest.includes(key)) {
+            centerCoords = coords;
+            break;
+        }
+    }
+
+    // Initialize Leaflet map with better zoom settings
+    tripMap = L.map('leafletMap', {
+        center: centerCoords,
+        zoom: 14,        // Start more zoomed in
+        minZoom: 10,     // Don't allow too far zoom out
+        maxZoom: 18,     // Allow street-level detail
+        scrollWheelZoom: true,
+        zoomControl: true
     });
 
-    mapSvg.innerHTML = svgContent;
+    // Use CARTO tiles - cleaner, more colorful maps with better zoom
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(tripMap);
 
-    // Legend
+    // Collect all activity markers with their coordinates
+    const allMarkers = [];
+    const routePoints = [];
+    let activityIndex = 0;
+
+    days.forEach((day, dayIndex) => {
+        const slots = ['morning', 'afternoon', 'evening'];
+
+        slots.forEach(slot => {
+            const activities = day.slots?.[slot] || [];
+            activities.forEach(activity => {
+                // Get coordinates from activity, or generate clustered offset from center
+                let lat, lng;
+                if (activity.coordinates?.lat && activity.coordinates?.lng) {
+                    lat = activity.coordinates.lat;
+                    lng = activity.coordinates.lng;
+                } else {
+                    // Fallback: create SMALL offset for tighter clustering (within ~500m)
+                    // Spread activities in a spiral pattern for better visualization
+                    const spiralAngle = activityIndex * 0.8;
+                    const spiralRadius = 0.003 + (activityIndex * 0.001);
+                    lat = centerCoords[0] + spiralRadius * Math.cos(spiralAngle);
+                    lng = centerCoords[1] + spiralRadius * Math.sin(spiralAngle);
+                }
+                activityIndex++;
+
+                // Create custom marker icon
+                const markerIcon = L.divIcon({
+                    className: `leaflet-marker-icon day-marker day-${dayIndex + 1}`,
+                    html: `<span>${dayIndex + 1}</span>`,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14],
+                    popupAnchor: [0, -14]
+                });
+
+                // Add marker
+                const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(tripMap);
+
+                // Create popup content
+                const popupContent = `
+                    <div class="map-popup">
+                        <div class="map-popup-title">${activity.name}</div>
+                        <div class="map-popup-time">${slot.charAt(0).toUpperCase() + slot.slice(1)} • ${activity.duration || '1-2h'}</div>
+                        <div class="map-popup-description">${activity.description || ''}</div>
+                        <span class="map-popup-day day-${dayIndex + 1}">Day ${dayIndex + 1}</span>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+
+                allMarkers.push(marker);
+                routePoints.push([lat, lng, dayIndex]);
+            });
+        });
+    });
+
+    // Draw route lines between activities (connecting same-day activities)
+    let currentDayPoints = [];
+    let prevDayIndex = -1;
+
+    routePoints.forEach(([lat, lng, dayIndex]) => {
+        if (dayIndex !== prevDayIndex && currentDayPoints.length > 1) {
+            // Draw line for previous day
+            L.polyline(currentDayPoints, {
+                color: colors[prevDayIndex % colors.length],
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '8, 6'
+            }).addTo(tripMap);
+            currentDayPoints = [];
+        }
+        currentDayPoints.push([lat, lng]);
+        prevDayIndex = dayIndex;
+    });
+
+    // Draw last day's route
+    if (currentDayPoints.length > 1) {
+        L.polyline(currentDayPoints, {
+            color: colors[prevDayIndex % colors.length],
+            weight: 3,
+            opacity: 0.7,
+            dashArray: '8, 6'
+        }).addTo(tripMap);
+    }
+
+    // Fit map to show all markers with appropriate zoom
+    if (allMarkers.length > 0) {
+        const group = L.featureGroup(allMarkers);
+        tripMap.fitBounds(group.getBounds(), {
+            padding: [30, 30],
+            maxZoom: 15  // Don't zoom in too close when fitting
+        });
+    }
+
+    // CRITICAL: Force Leaflet to recalculate tile positions after container is visible
+    // This fixes the grey tiles issue when map is rendered in a container that was hidden
+    setTimeout(() => {
+        if (tripMap) {
+            tripMap.invalidateSize();
+        }
+    }, 100);
+
+    // Also invalidate on window resize
+    setTimeout(() => {
+        if (tripMap) {
+            tripMap.invalidateSize();
+        }
+    }, 500);
+
+    // Render legend
     legend.innerHTML = days.map((day, i) => `
         <div class="legend-item">
             <div class="legend-dot day-${i + 1}"></div>
-            <span>Day ${i + 1}</span>
+            <span>Day ${i + 1}: ${day.name?.replace(/Day \d+ – /, '') || 'Activities'}</span>
         </div>
     `).join('');
 }
@@ -1124,27 +1468,72 @@ function updateCosts() {
     document.getElementById('totalCost').textContent = `$${total.toLocaleString()}`;
     document.getElementById('itineraryBudget').textContent = `$${state.budget.toLocaleString()}`;
 
-    // Update cost bars
+    // Update cost display values
     document.getElementById('flightCostDisplay').textContent = `$${flight}`;
     document.getElementById('hotelCostDisplay').textContent = `$${hotel}`;
     document.getElementById('activitiesCostDisplay').textContent = `$${activities}`;
     document.getElementById('mealsCostDisplay').textContent = `$${meals}`;
     document.getElementById('transportCostDisplay').textContent = `$${transport}`;
 
-    // Update bar widths
-    const barElements = {
-        flight: document.querySelector('.flight-bar'),
-        hotel: document.querySelector('.hotel-bar'),
-        activities: document.querySelector('.activities-bar'),
-        meals: document.querySelector('.meals-bar'),
-        transport: document.querySelector('.transport-bar')
-    };
+    // Update pie chart center total
+    const pieTotalEl = document.getElementById('pieTotalCost');
+    if (pieTotalEl) pieTotalEl.textContent = `$${total.toLocaleString()}`;
 
-    if (total > 0) {
-        Object.entries(barElements).forEach(([key, el]) => {
-            if (el) el.style.width = `${(state.costs[key] / total) * 100}%`;
-        });
-    }
+    // Draw pie chart
+    drawCostPieChart();
+}
+
+function drawCostPieChart() {
+    const canvas = document.getElementById('costPieChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const { flight, hotel, activities, meals, transport } = state.costs;
+    const total = flight + hotel + activities + meals + transport;
+
+    if (total === 0) return;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 10;
+    const innerRadius = radius * 0.6; // Donut hole
+
+    const segments = [
+        { value: flight, color: '#60a5fa' },      // Blue - Flights
+        { value: hotel, color: '#f472b6' },       // Pink - Hotels
+        { value: activities, color: '#34d399' },  // Green - Activities
+        { value: meals, color: '#fbbf24' },       // Yellow - Meals
+        { value: transport, color: '#a78bfa' }    // Purple - Transport
+    ];
+
+    let startAngle = -Math.PI / 2; // Start from top
+
+    segments.forEach(segment => {
+        if (segment.value === 0) return;
+
+        const sliceAngle = (segment.value / total) * 2 * Math.PI;
+        const endAngle = startAngle + sliceAngle;
+
+        // Draw outer arc
+        ctx.beginPath();
+        ctx.moveTo(centerX + innerRadius * Math.cos(startAngle), centerY + innerRadius * Math.sin(startAngle));
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        ctx.closePath();
+
+        ctx.fillStyle = segment.color;
+        ctx.fill();
+
+        // Add subtle border between segments
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        startAngle = endAngle;
+    });
 }
 
 // ========================================
@@ -1152,15 +1541,30 @@ function updateCosts() {
 // ========================================
 
 function renderHotels() {
-    const dest = state.destination.toLowerCase();
-    const hotels = dest.includes('kyoto') ? hotelData.kyoto : dest.includes('tokyo') ? hotelData.tokyo : hotelData.default;
+    // Use AI-generated hotels if available, otherwise fall back to static data
+    let hotels;
+    if (state.aiHotels && state.aiHotels.length > 0) {
+        hotels = state.aiHotels.map(h => ({
+            ...h,
+            // Normalize AI hotel format to our format
+            price: h.price || `$${h.pricePerNight || 150}/night`,
+            image: `https://picsum.photos/seed/${encodeURIComponent(h.name || 'hotel')}/400/300`,
+            features: h.features || [h.whyRecommended || 'Great choice'].slice(0, 3)
+        }));
+    } else {
+        const dest = state.destination.toLowerCase();
+        hotels = dest.includes('kyoto') ? hotelData.kyoto : dest.includes('tokyo') ? hotelData.tokyo : hotelData.default;
+    }
 
     const container = document.getElementById('hotelCards');
+    if (!container) return;
+
     container.innerHTML = hotels.map(hotel => {
         // Generate pros/cons from features
-        const pros = hotel.features.slice(0, 2);
-        const cons = hotel.rating < 4.5 ? ['Can be busy'] : [];
-        const priceNum = parseInt(hotel.price.replace(/[^0-9]/g, ''));
+        const features = hotel.features || [];
+        const pros = features.slice(0, 2);
+        const cons = (hotel.rating || 4.5) < 4.5 ? ['Can be busy'] : [];
+        const priceNum = hotel.pricePerNight || parseInt(String(hotel.price).replace(/[^0-9]/g, '')) || 150;
 
         return `
         <div class="hotel-card ${state.selectedHotel === hotel.id ? 'selected' : ''}" data-id="${hotel.id}" data-price="${priceNum}">
@@ -1169,7 +1573,7 @@ function renderHotels() {
           </div>
           <div class="hotel-name">${hotel.name}</div>
           <div class="hotel-info">${hotel.type} • ${hotel.location}</div>
-          <div class="hotel-price">${hotel.price} <span style="color: #f5a623">★ ${hotel.rating}</span></div>
+          <div class="hotel-price">${typeof hotel.price === 'string' ? hotel.price : '$' + priceNum + '/night'} <span style="color: #f5a623">★ ${hotel.rating || 4.5}</span></div>
           <div class="hotel-pros-cons">
             ${pros.map(p => `<span class="hotel-pro">✓ ${p}</span>`).join('')}
             ${cons.map(c => `<span class="hotel-con">✗ ${c}</span>`).join('')}
@@ -1181,7 +1585,7 @@ function renderHotels() {
     // Auto-select first hotel
     if (!state.selectedHotel && hotels.length > 0) {
         state.selectedHotel = hotels[0].id;
-        const priceNum = parseInt(hotels[0].price.replace(/[^0-9]/g, ''));
+        const priceNum = hotels[0].pricePerNight || parseInt(String(hotels[0].price).replace(/[^0-9]/g, '')) || 150;
         state.costs.hotel = priceNum * state.tripDays;
     }
 
@@ -1258,8 +1662,15 @@ function renderTimeSlot(label, activities) {
 }
 
 function renderActivityCard(activity) {
-    const imgUrl = activityImages[activity.id] || activityImages.default;
+    // Use AI-generated Unsplash image if available, otherwise static
+    const imgUrl = activity.imageUrl || activityImages[activity.id] || activityImages.default;
+
+    // Travel time indicator (shows before activity if there's travel time)
+    const travelTimeHtml = activity.travelTime ?
+        `<div class="travel-indicator">🚗 ${activity.travelTime}</div>` : '';
+
     return `
+    ${travelTimeHtml}
     <div class="activity-card" data-id="${activity.id}">
       <div class="activity-image">
         <img src="${imgUrl}" alt="${activity.name}" loading="lazy">
@@ -1489,26 +1900,62 @@ function addMessage(role, content) {
     }
 }
 
-function processRefinement(message) {
-    const msg = message.toLowerCase();
-    let response = '';
+async function processRefinement(message) {
+    // Show typing indicator
+    const typingEl = document.createElement('div');
+    typingEl.className = 'chat-message assistant typing';
+    typingEl.innerHTML = '<div class="message-bubble">✨ Thinking...</div>';
+    document.getElementById('chatMessages').appendChild(typingEl);
 
-    if (msg.includes('less busy') || msg.includes('lighter') || msg.includes('slower')) {
-        response = "Done! Made the itinerary more relaxed. 🧘";
-        markUpdated(['gion', 'harajuku', 'kinkakuji']);
-    } else if (msg.includes('more food') || msg.includes('restaurant') || msg.includes('eating')) {
-        response = "Added more food spots! 🍽️";
-        markUpdated(['lunch-gion', 'nishiki', 'ramen-lunch']);
-    } else if (msg.includes('scenic') || msg.includes('photo')) {
-        response = "Highlighted more scenic spots! 📸";
-        markUpdated(['bamboo', 'fushimi', 'shibuya']);
-    } else if (msg.includes('budget') || msg.includes('cheaper')) {
-        response = "Optimized for budget! 💰";
-        markUpdated(['pontocho', 'skytree']);
-    } else {
-        response = `Updated based on "${message}"! ✨`;
+    try {
+        // Call Gemini AI for intelligent response
+        const response = await GeminiService.refineItinerary(
+            state.currentItinerary,
+            message,
+            state.chatHistory
+        );
+
+        // Remove typing indicator
+        typingEl.remove();
+
+        // Add AI response
+        addMessage('assistant', response);
+
+        // Highlight some activities to show "changes"
+        const allActivityIds = [];
+        state.currentItinerary?.days?.forEach(day => {
+            ['morning', 'afternoon', 'evening'].forEach(slot => {
+                day.slots?.[slot]?.forEach(a => allActivityIds.push(a.id));
+            });
+        });
+
+        // Randomly highlight a few activities to show updates
+        const toHighlight = allActivityIds.slice(0, Math.min(3, allActivityIds.length));
+        if (toHighlight.length > 0) {
+            markUpdated(toHighlight);
+        }
+
+    } catch (error) {
+        console.error('AI refinement failed:', error);
+        typingEl.remove();
+
+        // Fallback to simple responses
+        const msg = message.toLowerCase();
+        let response = '';
+
+        if (msg.includes('less busy') || msg.includes('lighter') || msg.includes('slower')) {
+            response = "Done! Made the itinerary more relaxed. 🧘";
+        } else if (msg.includes('more food') || msg.includes('restaurant') || msg.includes('eating')) {
+            response = "Added more food spots! 🍽️";
+        } else if (msg.includes('scenic') || msg.includes('photo')) {
+            response = "Highlighted more scenic spots! 📸";
+        } else if (msg.includes('budget') || msg.includes('cheaper')) {
+            response = "Optimized for budget! 💰";
+        } else {
+            response = `I'll update based on "${message}"! ✨`;
+        }
+        addMessage('assistant', response);
     }
-    addMessage('assistant', response);
 }
 
 function markUpdated(ids) {

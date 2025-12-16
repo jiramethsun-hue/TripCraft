@@ -11,6 +11,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
     rel="stylesheet">
+  <!-- Leaflet.js for interactive maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="styles/main.css">
 </head>
 
@@ -99,6 +102,10 @@
                 <button class="counter-btn" data-action="increase" data-target="adults">+</button>
               </div>
             </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Start Date</label>
+            <input type="date" class="input-field" id="tripStartDate">
           </div>
           <div class="input-group">
             <label class="input-label">Trip Type</label>
@@ -270,66 +277,53 @@
         </div>
       </div>
 
-      <!-- Trip Info Cards -->
-      <div class="trip-info-cards">
-        <div class="info-card" id="visaCard">
-          <div class="info-card-icon">🛂</div>
-          <div class="info-card-content">
-            <div class="info-card-label">Visa Cost</div>
-            <div class="info-card-value" id="visaCost">$0</div>
-            <div class="info-card-note" id="visaNote">Visa-free entry</div>
+      <!-- Cost Overview Section - Pie Chart with Info Cards -->
+      <div class="cost-overview-section" id="costOverview">
+        <div class="cost-overview-left">
+          <h3>💰 Cost Breakdown</h3>
+          <div class="pie-chart-container">
+            <canvas id="costPieChart" width="180" height="180"></canvas>
+            <div class="pie-center-text">
+              <span class="pie-total" id="pieTotalCost">$1,850</span>
+              <span class="pie-label">Total</span>
+            </div>
+          </div>
+          <div class="pie-legend" id="pieLegend">
+            <div class="pie-legend-item"><span class="pie-dot flight"></span>Flights <span
+                id="flightCostDisplay">$650</span></div>
+            <div class="pie-legend-item"><span class="pie-dot hotel"></span>Hotels <span
+                id="hotelCostDisplay">$540</span></div>
+            <div class="pie-legend-item"><span class="pie-dot activities"></span>Activities <span
+                id="activitiesCostDisplay">$180</span></div>
+            <div class="pie-legend-item"><span class="pie-dot meals"></span>Meals <span
+                id="mealsCostDisplay">$300</span></div>
+            <div class="pie-legend-item"><span class="pie-dot transport"></span>Transport <span
+                id="transportCostDisplay">$180</span></div>
           </div>
         </div>
-        <div class="info-card" id="weatherCard">
-          <div class="info-card-icon">🌤️</div>
-          <div class="info-card-content">
-            <div class="info-card-label">Weather Forecast</div>
-            <div class="info-card-value" id="weatherTemp">12-18°C</div>
-            <div class="info-card-note" id="weatherNote">Mostly sunny, light rain possible</div>
-          </div>
-        </div>
-        <div class="info-card total-cost-card" id="totalCostCard">
-          <div class="info-card-icon">💵</div>
-          <div class="info-card-content">
-            <div class="info-card-label">Est. Total Cost</div>
-            <div class="info-card-value" id="totalCost">$1,850</div>
-            <div class="info-card-note">Per person</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cost Breakdown -->
-      <div class="cost-breakdown-section" id="costBreakdown">
-        <h3>💰 Cost Breakdown</h3>
-        <div class="cost-bars">
-          <div class="cost-bar-item">
-            <div class="cost-bar-label"><span>✈️ Flights</span><span id="flightCostDisplay">$650</span></div>
-            <div class="cost-bar">
-              <div class="cost-bar-fill flight-bar" style="width: 35%"></div>
+        <div class="cost-overview-right">
+          <div class="info-card" id="visaCard">
+            <div class="info-card-icon">🛂</div>
+            <div class="info-card-content">
+              <div class="info-card-label">Visa Cost</div>
+              <div class="info-card-value" id="visaCost">$0</div>
+              <div class="info-card-note" id="visaNote">Visa-free entry</div>
             </div>
           </div>
-          <div class="cost-bar-item">
-            <div class="cost-bar-label"><span>🏨 Hotels</span><span id="hotelCostDisplay">$540</span></div>
-            <div class="cost-bar">
-              <div class="cost-bar-fill hotel-bar" style="width: 29%"></div>
+          <div class="info-card" id="weatherCard">
+            <div class="info-card-icon">🌤️</div>
+            <div class="info-card-content">
+              <div class="info-card-label">Weather Forecast</div>
+              <div class="info-card-value" id="weatherTemp">12-18°C</div>
+              <div class="info-card-note" id="weatherNote">Mostly sunny</div>
             </div>
           </div>
-          <div class="cost-bar-item">
-            <div class="cost-bar-label"><span>🎫 Activities</span><span id="activitiesCostDisplay">$180</span></div>
-            <div class="cost-bar">
-              <div class="cost-bar-fill activities-bar" style="width: 10%"></div>
-            </div>
-          </div>
-          <div class="cost-bar-item">
-            <div class="cost-bar-label"><span>🍽️ Meals</span><span id="mealsCostDisplay">$300</span></div>
-            <div class="cost-bar">
-              <div class="cost-bar-fill meals-bar" style="width: 16%"></div>
-            </div>
-          </div>
-          <div class="cost-bar-item">
-            <div class="cost-bar-label"><span>🚕 Transport</span><span id="transportCostDisplay">$180</span></div>
-            <div class="cost-bar">
-              <div class="cost-bar-fill transport-bar" style="width: 10%"></div>
+          <div class="info-card total-cost-card" id="totalCostCard">
+            <div class="info-card-icon">💵</div>
+            <div class="info-card-content">
+              <div class="info-card-label">Est. Total Cost</div>
+              <div class="info-card-value" id="totalCost">$1,850</div>
+              <div class="info-card-note">Per person</div>
             </div>
           </div>
         </div>
@@ -351,26 +345,25 @@
         </div>
       </div>
 
-      <!-- Trip Map -->
-      <div class="trip-map-section">
-        <h3>🗺️ Trip Overview Map</h3>
-        <div class="trip-map" id="tripMap">
-          <div class="map-illustration">
-            <svg viewBox="0 0 400 250" class="map-svg" id="mapSvg">
-              <!-- Map will be rendered dynamically -->
-            </svg>
+      <!-- Map + Itinerary Side by Side -->
+      <div class="map-itinerary-layout">
+        <!-- Trip Map (Left Side) -->
+        <div class="trip-map-section">
+          <h3>🗺️ Trip Overview Map</h3>
+          <div class="trip-map" id="tripMap">
+            <div id="leafletMap"></div>
           </div>
           <div class="map-legend" id="mapLegend">
             <!-- Legend generated dynamically -->
           </div>
         </div>
+
+        <!-- Itinerary (Right Side) -->
+        <div class="itinerary-panel">
+          <div class="day-tabs" id="dayTabs"></div>
+          <div id="dayContents"></div>
+        </div>
       </div>
-
-      <!-- Day Tabs -->
-      <div class="day-tabs" id="dayTabs"></div>
-
-      <!-- Day Contents -->
-      <div id="dayContents"></div>
     </section>
   </main>
 
@@ -469,7 +462,12 @@
     </div>
   </div>
 
-  <script src="scripts/app.js"></script>
+  <!-- Leaflet.js library -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="scripts/config.js?v=8"></script>
+  <script src="scripts/gemini-service.js?v=8"></script>
+  <script src="scripts/app.js?v=8"></script>
 </body>
 
 </html>

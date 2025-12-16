@@ -679,6 +679,20 @@ body {
   border-radius: var(--radius-sm);
 }
 
+/* ========== Travel Time Indicator ========== */
+.travel-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: linear-gradient(90deg, transparent, var(--color-border-light), transparent);
+  margin: var(--space-2) 0;
+  border-radius: var(--radius-sm);
+}
+
 /* ========== Detail Panel ========== */
 .detail-overlay {
   position: fixed;
@@ -1223,20 +1237,172 @@ body {
   font-size: 0.75rem;
 }
 
-/* ========== Trip Info Cards ========== */
-.trip-info-cards {
+/* ========== Cost Overview Section (Pie Chart + Info Cards) ========== */
+.cost-overview-section {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
+  grid-template-columns: 1fr 280px;
+  gap: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
   margin-bottom: var(--space-4);
 }
 
-@media (max-width: 700px) {
-  .trip-info-cards {
+@media (max-width: 800px) {
+  .cost-overview-section {
     grid-template-columns: 1fr;
   }
 }
 
+.cost-overview-left h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.cost-overview-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pie-chart-container {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin-bottom: var(--space-3);
+}
+
+.pie-chart-container canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.pie-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.pie-total {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.pie-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.pie-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.pie-legend-item span:last-child {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.pie-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pie-dot.flight {
+  background: #60a5fa;
+}
+
+.pie-dot.hotel {
+  background: #f472b6;
+}
+
+.pie-dot.activities {
+  background: #34d399;
+}
+
+.pie-dot.meals {
+  background: #fbbf24;
+}
+
+.pie-dot.transport {
+  background: #a78bfa;
+}
+
+.cost-overview-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cost-overview-right .info-card {
+  padding: var(--space-3);
+}
+
+.cost-overview-right .info-card-icon {
+  font-size: 1.25rem;
+}
+
+.cost-overview-right .info-card-value {
+  font-size: 1rem;
+}
+
+/* ========== Map + Itinerary Side by Side ========== */
+.map-itinerary-layout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .map-itinerary-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-itinerary-layout .trip-map-section {
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  margin-bottom: 0;
+}
+
+.map-itinerary-layout #leafletMap {
+  height: 300px;
+}
+
+.itinerary-panel {
+  min-width: 0;
+}
+
+.itinerary-panel .day-tabs {
+  position: sticky;
+  top: 60px;
+  background: var(--color-background);
+  z-index: 5;
+  padding: var(--space-2) 0;
+}
+
+/* ========== Info Card (Compact) ========== */
 .info-card {
   display: flex;
   align-items: flex-start;
@@ -1280,62 +1446,7 @@ body {
   color: var(--color-success);
 }
 
-/* ========== Cost Breakdown ========== */
-.cost-breakdown-section {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  margin-bottom: var(--space-4);
-}
-
-.cost-breakdown-section h3 {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  margin-bottom: var(--space-4);
-}
-
-.cost-bars {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.cost-bar-item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.cost-bar-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8125rem;
-  font-weight: 500;
-}
-
-.cost-bar-label span:last-child {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.cost-bar {
-  height: 8px;
-  background: var(--color-surface-alt);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.cost-bar-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
-.flight-bar {
-  background: #60a5fa;
-}
-
+/* Legacy bar styles (kept for compatibility) */
 .hotel-bar {
   background: #f472b6;
 }
@@ -1465,29 +1576,22 @@ body {
 }
 
 .trip-map {
-  display: flex;
-  gap: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
-.map-illustration {
-  flex: 1;
-  background: linear-gradient(135deg, #e8f4f8 0%, #d4e8e0 100%);
-  border-radius: var(--radius-md);
-  min-height: 200px;
-  position: relative;
-  overflow: hidden;
-}
-
-.map-svg {
+#leafletMap {
+  height: 350px;
   width: 100%;
-  height: 100%;
+  border-radius: var(--radius-md);
+  z-index: 1;
 }
 
 .map-legend {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-width: 120px;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .legend-item {
@@ -1505,23 +1609,120 @@ body {
 }
 
 .legend-dot.day-1 {
-  background: #60a5fa;
+  background: #3b82f6;
 }
 
 .legend-dot.day-2 {
-  background: #34d399;
+  background: #10b981;
 }
 
 .legend-dot.day-3 {
-  background: #f472b6;
+  background: #ec4899;
 }
 
 .legend-dot.day-4 {
-  background: #fbbf24;
+  background: #f59e0b;
 }
 
 .legend-dot.day-5 {
-  background: #a78bfa;
+  background: #8b5cf6;
+}
+
+/* Custom Leaflet Marker Styles */
+.leaflet-marker-icon.day-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+  font-size: 12px;
+  color: white;
+}
+
+.day-marker.day-1 {
+  background: #3b82f6;
+}
+
+.day-marker.day-2 {
+  background: #10b981;
+}
+
+.day-marker.day-3 {
+  background: #ec4899;
+}
+
+.day-marker.day-4 {
+  background: #f59e0b;
+}
+
+.day-marker.day-5 {
+  background: #8b5cf6;
+}
+
+/* Leaflet Popup Styles */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.leaflet-popup-content {
+  margin: 12px 16px;
+  font-family: 'Inter', sans-serif;
+}
+
+.map-popup {
+  min-width: 180px;
+}
+
+.map-popup-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.map-popup-time {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.map-popup-description {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.map-popup-day {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: white;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.map-popup-day.day-1 {
+  background: #3b82f6;
+}
+
+.map-popup-day.day-2 {
+  background: #10b981;
+}
+
+.map-popup-day.day-3 {
+  background: #ec4899;
+}
+
+.map-popup-day.day-4 {
+  background: #f59e0b;
+}
+
+.map-popup-day.day-5 {
+  background: #8b5cf6;
 }
 
 /* ========== Total Trip Tab ========== */

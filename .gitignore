@@ -1,16 +1,15 @@
+# API keys - do not commit
+scripts/config.js
+
+# Backups
+backups/
+
 # OS files
 .DS_Store
 Thumbs.db
 
 # Editor files
-.idea/
 .vscode/
+.idea/
 *.swp
 *.swo
-
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-build/
