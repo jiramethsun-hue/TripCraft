@@ -25,6 +25,21 @@ const state = {
     mustHave: [],
     avoid: [],
 
+    // Flight Preferences
+    flightTime: [],           // early-morning, morning, afternoon, evening, late-night, redeye
+    flightSeat: 'standard',   // standard, extra-legroom, premium, business
+    flightLuggage: '1-checked', // carry-on, 1-checked, 2-checked
+    flightAmenities: [],      // meals, entertainment, wifi, power
+    flightPriority: 'cheapest', // cheapest, shortest, timing, overall
+
+    // Hotel Preferences
+    hotelRoomSize: 'standard', // compact, standard, spacious, suite
+    hotelBedType: [],          // single, twin, double, queen, king
+    hotelLocation: [],         // metro, restaurants, center, airport, train
+    hotelAmenities: [],        // luggage, hairdryer, breakfast, bathtub, gym, pool, workspace
+    hotelReviewFocus: [],      // cleanliness, service, value, quiet
+    hotelStyle: [],            // business, boutique, traditional, apartment
+
     currentItinerary: null,
     selectedDay: -1, // -1 = Total Trip
     selectedActivity: null,
@@ -65,9 +80,22 @@ const hotelData = {
             type: 'Luxury Hotel',
             location: 'Nijojo-mae',
             price: '$450/night',
+            priceNum: 450,
             rating: 4.8,
             image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
-            features: ['Traditional garden', 'Onsen spa', 'Central location']
+            features: ['Traditional garden', 'Onsen spa', 'Central location'],
+            // New preference attributes
+            roomSize: 'spacious',
+            bedTypes: ['king', 'twin'],
+            locationTags: ['center', 'metro'],
+            amenities: ['breakfast', 'bathtub', 'hairdryer', 'luggage', 'gym'],
+            reviewHighlights: ['cleanliness', 'service'],
+            style: 'boutique',
+            guestVoice: {
+                positive: ['Impeccable service and stunning garden views', 'The onsen was absolutely divine'],
+                concerns: ['Premium pricing but worth every yen'],
+                topReview: '⭐ "Best hotel experience in Japan" - verified guest'
+            }
         },
         {
             id: 'hotel2',
@@ -75,9 +103,21 @@ const hotelData = {
             type: 'Boutique Hotel',
             location: 'Gojo',
             price: '$180/night',
+            priceNum: 180,
             rating: 4.6,
             image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop',
-            features: ['Modern Japanese', 'Near station', 'Great value']
+            features: ['Modern Japanese', 'Near station', 'Great value'],
+            roomSize: 'standard',
+            bedTypes: ['queen', 'twin'],
+            locationTags: ['metro', 'train', 'restaurants'],
+            amenities: ['breakfast', 'hairdryer', 'workspace'],
+            reviewHighlights: ['value', 'cleanliness'],
+            style: 'boutique',
+            guestVoice: {
+                positive: ['Perfect blend of modern and traditional', 'Walking distance to everything'],
+                concerns: ['Room slightly compact but well-designed'],
+                topReview: '⭐ "Great value for Kyoto!" - verified guest'
+            }
         },
         {
             id: 'hotel3',
@@ -85,9 +125,21 @@ const hotelData = {
             type: 'Design Hostel',
             location: 'Kyoto Station',
             price: '$45/night',
+            priceNum: 45,
             rating: 4.4,
             image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop',
-            features: ['Social atmosphere', 'Café bar', 'Budget friendly']
+            features: ['Social atmosphere', 'Café bar', 'Budget friendly'],
+            roomSize: 'compact',
+            bedTypes: ['single', 'double'],
+            locationTags: ['train', 'metro', 'restaurants'],
+            amenities: ['luggage', 'workspace'],
+            reviewHighlights: ['value', 'service'],
+            style: 'business',
+            guestVoice: {
+                positive: ['Amazing cafe and social vibe', 'Super clean and modern'],
+                concerns: ['Can be noisy on weekends'],
+                topReview: '⭐ "Best hostel I\'ve ever stayed in!" - verified guest'
+            }
         }
     ],
     'tokyo': [
@@ -97,9 +149,21 @@ const hotelData = {
             type: 'Luxury Hotel',
             location: 'Otemachi',
             price: '$800/night',
+            priceNum: 800,
             rating: 4.9,
             image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
-            features: ['Sky lobby', 'Panoramic views', 'Michelin restaurant']
+            features: ['Sky lobby', 'Panoramic views', 'Michelin restaurant'],
+            roomSize: 'suite',
+            bedTypes: ['king'],
+            locationTags: ['center', 'metro'],
+            amenities: ['breakfast', 'bathtub', 'gym', 'pool', 'hairdryer', 'luggage', 'workspace'],
+            reviewHighlights: ['cleanliness', 'service', 'quiet'],
+            style: 'boutique',
+            guestVoice: {
+                positive: ['Unparalleled luxury and service', 'The views are breathtaking'],
+                concerns: ['Very expensive but exceptional quality'],
+                topReview: '⭐ "Pure perfection in every detail" - verified guest'
+            }
         },
         {
             id: 'hotel2',
@@ -107,9 +171,21 @@ const hotelData = {
             type: 'Mid-range Hotel',
             location: 'Shinjuku',
             price: '$120/night',
+            priceNum: 120,
             rating: 4.5,
             image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop',
-            features: ['Godzilla head!', 'Great location', 'Modern rooms']
+            features: ['Godzilla head!', 'Great location', 'Modern rooms'],
+            roomSize: 'compact',
+            bedTypes: ['double', 'twin'],
+            locationTags: ['metro', 'restaurants', 'center'],
+            amenities: ['hairdryer', 'luggage'],
+            reviewHighlights: ['value', 'cleanliness'],
+            style: 'business',
+            guestVoice: {
+                positive: ['Godzilla terrace is a must-see!', 'Perfect Shinjuku location'],
+                concerns: ['Rooms are typical Tokyo size'],
+                topReview: '⭐ "Fun and convenient!" - verified guest'
+            }
         },
         {
             id: 'hotel3',
@@ -117,9 +193,21 @@ const hotelData = {
             type: 'Design Hostel',
             location: 'Kuramae',
             price: '$35/night',
+            priceNum: 35,
             rating: 4.3,
             image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop',
-            features: ['Trendy area', 'Bar lounge', 'Art vibes']
+            features: ['Trendy area', 'Bar lounge', 'Art vibes'],
+            roomSize: 'compact',
+            bedTypes: ['single'],
+            locationTags: ['metro', 'restaurants'],
+            amenities: ['luggage', 'workspace'],
+            reviewHighlights: ['value', 'service'],
+            style: 'boutique',
+            guestVoice: {
+                positive: ['Incredible atmosphere and design', 'Staff are super helpful'],
+                concerns: ['Kuramae is quieter but charming'],
+                topReview: '⭐ "Coolest hostel in Tokyo!" - verified guest'
+            }
         }
     ],
     'default': [
@@ -129,9 +217,21 @@ const hotelData = {
             type: 'Luxury',
             location: 'City Center',
             price: '$300/night',
+            priceNum: 300,
             rating: 4.7,
             image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
-            features: ['Central', 'Spa', 'Restaurant']
+            features: ['Central', 'Spa', 'Restaurant'],
+            roomSize: 'spacious',
+            bedTypes: ['king', 'queen'],
+            locationTags: ['center', 'metro', 'restaurants'],
+            amenities: ['breakfast', 'bathtub', 'gym', 'hairdryer'],
+            reviewHighlights: ['service', 'cleanliness'],
+            style: 'boutique',
+            guestVoice: {
+                positive: ['Excellent central location', 'Beautiful rooms'],
+                concerns: ['Can be busy during peak times'],
+                topReview: '⭐ "Perfect for city exploration" - verified guest'
+            }
         },
         {
             id: 'hotel2',
@@ -139,9 +239,21 @@ const hotelData = {
             type: 'Mid-range',
             location: 'Downtown',
             price: '$100/night',
+            priceNum: 100,
             rating: 4.4,
             image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
-            features: ['Good value', 'Near transit', 'Breakfast included']
+            features: ['Good value', 'Near transit', 'Breakfast included'],
+            roomSize: 'standard',
+            bedTypes: ['queen', 'twin'],
+            locationTags: ['metro', 'train'],
+            amenities: ['breakfast', 'hairdryer', 'luggage'],
+            reviewHighlights: ['value', 'cleanliness'],
+            style: 'business',
+            guestVoice: {
+                positive: ['Great breakfast spread', 'Clean and comfortable'],
+                concerns: ['Basic decor but functional'],
+                topReview: '⭐ "Reliable and affordable" - verified guest'
+            }
         }
     ]
 };
@@ -161,7 +273,13 @@ const flightData = {
             departure: '10:30 AM',
             arrival: '3:00 PM +1',
             pros: ['Direct flight', 'Premium service', 'Good meal'],
-            cons: ['Higher price']
+            cons: ['Higher price'],
+            // New preference attributes
+            departureSlot: 'morning',
+            seatType: 'standard',
+            luggage: '2-checked',
+            amenities: ['meals', 'entertainment', 'power'],
+            matchScore: 0 // Will be calculated dynamically
         },
         {
             id: 'flight2',
@@ -172,7 +290,12 @@ const flightData = {
             departure: '11:45 AM',
             arrival: '6:00 PM +1',
             pros: ['Good value', 'Comfortable seats'],
-            cons: ['1 layover', 'Longer travel time']
+            cons: ['1 layover', 'Longer travel time'],
+            departureSlot: 'morning',
+            seatType: 'extra-legroom',
+            luggage: '1-checked',
+            amenities: ['meals', 'entertainment', 'wifi', 'power'],
+            matchScore: 0
         },
         {
             id: 'flight3',
@@ -183,7 +306,12 @@ const flightData = {
             departure: '9:00 PM',
             arrival: '5:45 PM +1',
             pros: ['Best price', 'Great entertainment'],
-            cons: ['Overnight flight', 'Long layover']
+            cons: ['Overnight flight', 'Long layover'],
+            departureSlot: 'late-night',
+            seatType: 'standard',
+            luggage: '1-checked',
+            amenities: ['meals', 'entertainment', 'wifi', 'power'],
+            matchScore: 0
         }
     ],
     'tokyo': [
@@ -196,7 +324,12 @@ const flightData = {
             departure: '11:00 AM',
             arrival: '2:45 PM +1',
             pros: ['Direct flight', 'Excellent service'],
-            cons: ['Premium pricing']
+            cons: ['Premium pricing'],
+            departureSlot: 'morning',
+            seatType: 'standard',
+            luggage: '2-checked',
+            amenities: ['meals', 'entertainment', 'wifi', 'power'],
+            matchScore: 0
         },
         {
             id: 'flight2',
@@ -207,7 +340,28 @@ const flightData = {
             departure: '3:30 PM',
             arrival: '9:00 AM +1',
             pros: ['Great price', 'Good food'],
-            cons: ['1 layover']
+            cons: ['1 layover'],
+            departureSlot: 'afternoon',
+            seatType: 'standard',
+            luggage: '1-checked',
+            amenities: ['meals', 'entertainment'],
+            matchScore: 0
+        },
+        {
+            id: 'flight3',
+            airline: 'EVA Air',
+            price: 520,
+            duration: '19h 15m',
+            stops: '1 stop (Taipei)',
+            departure: '6:00 AM',
+            arrival: '1:15 AM +1',
+            pros: ['Budget-friendly', 'Hello Kitty jet!'],
+            cons: ['Early departure', 'Long layover'],
+            departureSlot: 'early-morning',
+            seatType: 'standard',
+            luggage: '1-checked',
+            amenities: ['meals', 'entertainment'],
+            matchScore: 0
         }
     ],
     'default': [
@@ -220,7 +374,12 @@ const flightData = {
             departure: '10:00 AM',
             arrival: '10:00 PM',
             pros: ['Direct flight'],
-            cons: ['Basic amenities']
+            cons: ['Basic amenities'],
+            departureSlot: 'morning',
+            seatType: 'standard',
+            luggage: '1-checked',
+            amenities: ['meals'],
+            matchScore: 0
         }
     ]
 };
@@ -789,8 +948,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================================
 
 function initializeChips() {
+    // Multi-select groups
     const multiSelectGroups = ['tripTypeChips', 'styleChips', 'cuisineChips', 'dietChips',
-        'accomTypeChips', 'accomLocChips', 'mustHaveChips', 'avoidChips'];
+        'accomTypeChips', 'accomLocChips', 'mustHaveChips', 'avoidChips',
+        // New flight preferences
+        'flightTimeChips', 'flightAmenitiesChips',
+        // New hotel preferences
+        'hotelBedTypeChips', 'hotelLocationChips', 'hotelAmenitiesChips',
+        'hotelReviewFocusChips', 'hotelStyleChips'];
 
     multiSelectGroups.forEach(groupId => {
         const group = document.getElementById(groupId);
@@ -803,25 +968,49 @@ function initializeChips() {
         });
     });
 
-    const paceGroup = document.getElementById('paceChips');
-    if (paceGroup) {
-        paceGroup.querySelectorAll('.chip').forEach(chip => {
+    // Single-select groups (only one can be active at a time)
+    const singleSelectGroups = [
+        { id: 'paceChips', stateKey: 'pace' },
+        { id: 'flightSeatChips', stateKey: 'flightSeat' },
+        { id: 'flightLuggageChips', stateKey: 'flightLuggage' },
+        { id: 'flightPriorityChips', stateKey: 'flightPriority' },
+        { id: 'hotelRoomSizeChips', stateKey: 'hotelRoomSize' }
+    ];
+
+    singleSelectGroups.forEach(({ id, stateKey }) => {
+        const group = document.getElementById(id);
+        if (!group) return;
+        group.querySelectorAll('.chip').forEach(chip => {
             chip.addEventListener('click', () => {
-                paceGroup.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
-                state.pace = chip.dataset.value;
+                state[stateKey] = chip.dataset.value;
             });
         });
-    }
+    });
 }
 
 function updateStateFromChips(groupId) {
     const group = document.getElementById(groupId);
     const activeValues = Array.from(group.querySelectorAll('.chip.active')).map(c => c.dataset.value);
     const stateMap = {
-        'tripTypeChips': 'tripType', 'styleChips': 'travelStyle', 'cuisineChips': 'cuisine',
-        'dietChips': 'diet', 'accomTypeChips': 'accomType', 'accomLocChips': 'accomLoc',
-        'mustHaveChips': 'mustHave', 'avoidChips': 'avoid'
+        'tripTypeChips': 'tripType',
+        'styleChips': 'travelStyle',
+        'cuisineChips': 'cuisine',
+        'dietChips': 'diet',
+        'accomTypeChips': 'accomType',
+        'accomLocChips': 'accomLoc',
+        'mustHaveChips': 'mustHave',
+        'avoidChips': 'avoid',
+        // New flight preferences
+        'flightTimeChips': 'flightTime',
+        'flightAmenitiesChips': 'flightAmenities',
+        // New hotel preferences
+        'hotelBedTypeChips': 'hotelBedType',
+        'hotelLocationChips': 'hotelLocation',
+        'hotelAmenitiesChips': 'hotelAmenities',
+        'hotelReviewFocusChips': 'hotelReviewFocus',
+        'hotelStyleChips': 'hotelStyle'
     };
     if (stateMap[groupId]) state[stateMap[groupId]] = activeValues;
 }
@@ -1029,6 +1218,9 @@ async function generateItinerary() {
         updateCosts();
         showItinerarySection();
 
+        // Load real photos from Unsplash (after DOM is rendered)
+        loadRealPhotos();
+
     } catch (error) {
         console.error('AI Generation failed, using fallback:', error);
         clearInterval(interval);
@@ -1071,7 +1263,55 @@ async function generateItinerary() {
         renderItinerary();
         updateCosts();
         showItinerarySection();
+
+        // Load real photos from Unsplash (for fallback too)
+        loadRealPhotos();
     }
+}
+
+/**
+ * Load real photos from Unsplash for activities and hotels
+ * This runs after DOM is rendered and progressively updates images
+ */
+async function loadRealPhotos() {
+    // Check if UnsplashService is available and configured
+    if (typeof UnsplashService === 'undefined') {
+        console.log('UnsplashService not loaded, skipping real photos');
+        return;
+    }
+
+    if (!CONFIG.UNSPLASH_ACCESS_KEY || CONFIG.UNSPLASH_ACCESS_KEY === 'YOUR_UNSPLASH_KEY_HERE') {
+        console.log('Unsplash API key not configured, using stock photos');
+        return;
+    }
+
+    const destination = state.destination || '';
+
+    // Collect all activities from the itinerary
+    const allActivities = [];
+    if (state.currentItinerary?.days) {
+        state.currentItinerary.days.forEach(day => {
+            ['morning', 'afternoon', 'evening'].forEach(slot => {
+                const activities = day.slots?.[slot] || [];
+                allActivities.push(...activities);
+            });
+        });
+    }
+
+    // Load activity photos
+    if (allActivities.length > 0) {
+        console.log(`📸 Loading ${allActivities.length} activity photos from Unsplash...`);
+        await UnsplashService.updateActivityImages(allActivities, destination);
+    }
+
+    // Load hotel photos
+    const hotels = state.aiHotels || [];
+    if (hotels.length > 0) {
+        console.log(`🏨 Loading ${hotels.length} hotel photos from Unsplash...`);
+        await UnsplashService.updateHotelImages(hotels, destination);
+    }
+
+    console.log('✅ Real photos loaded');
 }
 
 // Convert AI-generated itinerary to our app format
@@ -1079,18 +1319,55 @@ function convertAIItineraryToFormat(aiItinerary) {
     const days = aiItinerary.days.map((day, index) => {
         const activities = day.activities || [];
 
-        // Split activities into time slots
-        const morning = activities.filter(a => {
-            const hour = parseInt(a.time?.split(':')[0] || '12');
-            return hour < 12;
-        });
-        const afternoon = activities.filter(a => {
-            const hour = parseInt(a.time?.split(':')[0] || '12');
-            return hour >= 12 && hour < 17;
-        });
-        const evening = activities.filter(a => {
-            const hour = parseInt(a.time?.split(':')[0] || '12');
-            return hour >= 17;
+        // Helper to parse time strings like "9AM", "2PM", "9:00", "14:00"
+        const parseHour = (timeStr) => {
+            if (!timeStr) return -1;
+            const str = timeStr.toUpperCase().trim();
+
+            // Handle "9AM", "2PM" format
+            const ampmMatch = str.match(/^(\d{1,2})\s*(AM|PM)?/);
+            if (ampmMatch) {
+                let hour = parseInt(ampmMatch[1]);
+                const isPM = ampmMatch[2] === 'PM';
+                if (isPM && hour !== 12) hour += 12;
+                if (!isPM && ampmMatch[2] === 'AM' && hour === 12) hour = 0;
+                return hour;
+            }
+
+            // Handle "9:00", "14:00" format  
+            const colonMatch = str.match(/^(\d{1,2}):/);
+            if (colonMatch) {
+                return parseInt(colonMatch[1]);
+            }
+
+            return -1;
+        };
+
+        // Assign activities to slots based on their index if time parsing fails
+        // This ensures no duplication
+        const morning = [];
+        const afternoon = [];
+        const evening = [];
+
+        activities.forEach((a, idx) => {
+            const hour = parseHour(a.time);
+
+            if (hour >= 0 && hour < 12) {
+                morning.push(a);
+            } else if (hour >= 12 && hour < 17) {
+                afternoon.push(a);
+            } else if (hour >= 17) {
+                evening.push(a);
+            } else {
+                // If no valid time, distribute based on activity index
+                if (idx === 0) {
+                    morning.push(a);
+                } else if (idx === activities.length - 1 && activities.length > 2) {
+                    evening.push(a);
+                } else {
+                    afternoon.push(a);
+                }
+            }
         });
 
         // Convert to our activity format with travel times and dynamic images
@@ -1119,7 +1396,7 @@ function convertAIItineraryToFormat(aiItinerary) {
             description: day.description,
             slots: {
                 morning: morning.map(convertActivity),
-                afternoon: afternoon.length ? afternoon.map(convertActivity) : [convertActivity(activities[Math.floor(activities.length / 2)] || activities[0])],
+                afternoon: afternoon.map(convertActivity),
                 evening: evening.map(convertActivity)
             }
         };
@@ -1231,15 +1508,76 @@ function renderFlights() {
         flights = dest.includes('kyoto') ? flightData.kyoto : dest.includes('tokyo') ? flightData.tokyo : flightData.default;
     }
 
+    // Calculate preference match scores
+    flights = flights.map(flight => {
+        let matchScore = 0;
+        let matchReasons = [];
+
+        // Check departure time preference
+        if (state.flightTime.length > 0 && flight.departureSlot) {
+            if (state.flightTime.includes(flight.departureSlot)) {
+                matchScore += 2;
+                matchReasons.push('⏰ Preferred time');
+            }
+        }
+
+        // Check amenities match
+        if (state.flightAmenities.length > 0 && flight.amenities) {
+            const matchedAmenities = state.flightAmenities.filter(a => flight.amenities.includes(a));
+            matchScore += matchedAmenities.length;
+            if (matchedAmenities.length > 0) {
+                matchReasons.push(`✓ ${matchedAmenities.length} amenities`);
+            }
+        }
+
+        // Check luggage match
+        if (flight.luggage === state.flightLuggage) {
+            matchScore += 1;
+            matchReasons.push('🧳 Luggage OK');
+        }
+
+        // Check seat match
+        if (flight.seatType === state.flightSeat) {
+            matchScore += 1;
+        }
+
+        // Priority scoring
+        if (state.flightPriority === 'cheapest') {
+            // Lower price = higher score (normalize)
+            matchScore += Math.max(0, (1000 - flight.price) / 200);
+        } else if (state.flightPriority === 'shortest') {
+            // Shorter duration = higher score
+            const hours = parseFloat(flight.duration) || 12;
+            matchScore += Math.max(0, (20 - hours) / 2);
+        }
+
+        return { ...flight, matchScore, matchReasons };
+    });
+
+    // Sort by priority preference
+    if (state.flightPriority === 'cheapest') {
+        flights.sort((a, b) => a.price - b.price);
+    } else if (state.flightPriority === 'shortest') {
+        flights.sort((a, b) => parseFloat(a.duration) - parseFloat(b.duration));
+    } else {
+        flights.sort((a, b) => b.matchScore - a.matchScore);
+    }
+
     const container = document.getElementById('flightCards');
     if (!container) return;
 
-    container.innerHTML = flights.map(flight => `
-        <div class="flight-card ${state.selectedFlight === flight.id ? 'selected' : ''}" data-id="${flight.id}" data-price="${flight.price}">
+    container.innerHTML = flights.map((flight, idx) => {
+        const isBestMatch = idx === 0 && flight.matchScore > 0;
+        const matchBadge = isBestMatch ? '<span class="pref-badge best">🎯 Best Match</span>' :
+            (flight.matchReasons?.length > 0 ? '<span class="pref-badge">✓ Matches preferences</span>' : '');
+
+        return `
+        <div class="flight-card ${state.selectedFlight === flight.id ? 'selected' : ''} ${isBestMatch ? 'best-match' : ''}" data-id="${flight.id}" data-price="${flight.price}">
             <div class="flight-header">
                 <span class="flight-airline">✈️ ${flight.airline}</span>
                 <span class="flight-price">$${flight.price}</span>
             </div>
+            ${matchBadge}
             <div class="flight-details">
                 <span>🕐 ${flight.duration}</span>
                 <span>📍 ${flight.stops}</span>
@@ -1248,18 +1586,23 @@ function renderFlights() {
                 <span>Depart: ${flight.departure}</span>
                 <span>Arrive: ${flight.arrival}</span>
             </div>
+            ${flight.matchReasons?.length > 0 ? `
+            <div class="flight-match-reasons">
+                ${flight.matchReasons.map(r => `<span class="match-tag">${r}</span>`).join('')}
+            </div>
+            ` : ''}
             <div class="flight-pros-cons">
                 ${(flight.pros || []).map(p => `<span class="flight-pro">✓ ${p}</span>`).join('')}
                 ${(flight.cons || []).map(c => `<span class="flight-con">✗ ${c}</span>`).join('')}
             </div>
         </div>
-    `).join('');
+    `}).join('');
 
-    // Auto-select cheapest
+    // Auto-select best match or cheapest
     if (!state.selectedFlight && flights.length > 0) {
-        const cheapest = flights.reduce((a, b) => a.price < b.price ? a : b);
-        state.selectedFlight = cheapest.id;
-        state.costs.flight = cheapest.price;
+        const best = flights[0]; // Already sorted by preference
+        state.selectedFlight = best.id;
+        state.costs.flight = best.price;
     }
 
     container.querySelectorAll('.flight-card').forEach(card => {
@@ -1448,11 +1791,11 @@ function renderTripMap() {
         }
     }, 500);
 
-    // Render legend
+    // Render legend - strip "Day N" prefix with any dash type
     legend.innerHTML = days.map((day, i) => `
         <div class="legend-item">
             <div class="legend-dot day-${i + 1}"></div>
-            <span>Day ${i + 1}: ${day.name?.replace(/Day \d+ – /, '') || 'Activities'}</span>
+            <span>Day ${i + 1}: ${(day.name || 'Activities').replace(/^Day\s*\d+\s*[–\-—:]\s*/i, '')}</span>
         </div>
     `).join('');
 }
@@ -1556,24 +1899,105 @@ function renderHotels() {
         hotels = dest.includes('kyoto') ? hotelData.kyoto : dest.includes('tokyo') ? hotelData.tokyo : hotelData.default;
     }
 
+    // Calculate preference match scores for hotels
+    hotels = hotels.map(hotel => {
+        let matchScore = 0;
+        let matchReasons = [];
+
+        // Check room size match
+        if (hotel.roomSize && hotel.roomSize === state.hotelRoomSize) {
+            matchScore += 2;
+            matchReasons.push('📐 Room size');
+        }
+
+        // Check bed type match
+        if (state.hotelBedType.length > 0 && hotel.bedTypes) {
+            const matchedBeds = state.hotelBedType.filter(b => hotel.bedTypes.includes(b));
+            if (matchedBeds.length > 0) {
+                matchScore += 2;
+                matchReasons.push('🛏️ Bed type');
+            }
+        }
+
+        // Check location match
+        if (state.hotelLocation.length > 0 && hotel.locationTags) {
+            const matchedLocations = state.hotelLocation.filter(l => hotel.locationTags.includes(l));
+            matchScore += matchedLocations.length;
+            if (matchedLocations.length > 0) {
+                matchReasons.push(`📍 ${matchedLocations.length} location`);
+            }
+        }
+
+        // Check amenities match
+        if (state.hotelAmenities.length > 0 && hotel.amenities) {
+            const matchedAmenities = state.hotelAmenities.filter(a => hotel.amenities.includes(a));
+            matchScore += matchedAmenities.length * 1.5;
+            if (matchedAmenities.length > 0) {
+                matchReasons.push(`✓ ${matchedAmenities.length} amenities`);
+            }
+        }
+
+        // Check review focus match
+        if (state.hotelReviewFocus.length > 0 && hotel.reviewHighlights) {
+            const matchedReviews = state.hotelReviewFocus.filter(r => hotel.reviewHighlights.includes(r));
+            if (matchedReviews.length > 0) {
+                matchScore += matchedReviews.length;
+                matchReasons.push('⭐ Top rated');
+            }
+        }
+
+        // Check style match
+        if (state.hotelStyle.length > 0 && hotel.style) {
+            if (state.hotelStyle.includes(hotel.style)) {
+                matchScore += 2;
+                matchReasons.push('🎨 Your style');
+            }
+        }
+
+        return { ...hotel, matchScore, matchReasons };
+    });
+
+    // Sort by match score
+    hotels.sort((a, b) => b.matchScore - a.matchScore);
+
     const container = document.getElementById('hotelCards');
     if (!container) return;
 
-    container.innerHTML = hotels.map(hotel => {
+    container.innerHTML = hotels.map((hotel, idx) => {
         // Generate pros/cons from features
         const features = hotel.features || [];
         const pros = features.slice(0, 2);
         const cons = (hotel.rating || 4.5) < 4.5 ? ['Can be busy'] : [];
-        const priceNum = hotel.pricePerNight || parseInt(String(hotel.price).replace(/[^0-9]/g, '')) || 150;
+        const priceNum = hotel.priceNum || hotel.pricePerNight || parseInt(String(hotel.price).replace(/[^0-9]/g, '')) || 150;
+
+        const isBestMatch = idx === 0 && hotel.matchScore > 0;
+        const matchBadge = isBestMatch ? '<span class="pref-badge best">🎯 Best Match</span>' :
+            (hotel.matchReasons?.length > 0 ? '<span class="pref-badge">✓ Matches preferences</span>' : '');
+
+        // Room info
+        const roomSizeLabels = { compact: '<15m²', standard: '15-20m²', spacious: '20-25m²', suite: '25m²+' };
+        const roomInfo = hotel.roomSize ? `${roomSizeLabels[hotel.roomSize] || hotel.roomSize}` : '';
+        const bedInfo = hotel.bedTypes ? hotel.bedTypes.map(b => b.charAt(0).toUpperCase() + b.slice(1)).join('/') : '';
+
+        // Guest voice
+        const guestVoice = hotel.guestVoice?.topReview || '';
 
         return `
-        <div class="hotel-card ${state.selectedHotel === hotel.id ? 'selected' : ''}" data-id="${hotel.id}" data-price="${priceNum}">
+        <div class="hotel-card ${state.selectedHotel === hotel.id ? 'selected' : ''} ${isBestMatch ? 'best-match' : ''}" data-id="${hotel.id}" data-price="${priceNum}">
           <div class="hotel-image">
             <img src="${hotel.image}" alt="${hotel.name}" loading="lazy">
           </div>
+          ${matchBadge}
           <div class="hotel-name">${hotel.name}</div>
           <div class="hotel-info">${hotel.type} • ${hotel.location}</div>
+          ${roomInfo || bedInfo ? `<div class="hotel-room-info">📐 ${roomInfo} ${bedInfo ? '• 🛏️ ' + bedInfo : ''}</div>` : ''}
           <div class="hotel-price">${typeof hotel.price === 'string' ? hotel.price : '$' + priceNum + '/night'} <span style="color: #f5a623">★ ${hotel.rating || 4.5}</span></div>
+          ${hotel.matchReasons?.length > 0 ? `
+          <div class="hotel-match-reasons">
+            ${hotel.matchReasons.map(r => `<span class="match-tag">${r}</span>`).join('')}
+          </div>
+          ` : ''}
+          ${guestVoice ? `<div class="guest-voice">${guestVoice}</div>` : ''}
           <div class="hotel-pros-cons">
             ${pros.map(p => `<span class="hotel-pro">✓ ${p}</span>`).join('')}
             ${cons.map(c => `<span class="hotel-con">✗ ${c}</span>`).join('')}
@@ -1582,10 +2006,10 @@ function renderHotels() {
       `;
     }).join('');
 
-    // Auto-select first hotel
+    // Auto-select best match hotel
     if (!state.selectedHotel && hotels.length > 0) {
         state.selectedHotel = hotels[0].id;
-        const priceNum = hotels[0].pricePerNight || parseInt(String(hotels[0].price).replace(/[^0-9]/g, '')) || 150;
+        const priceNum = hotels[0].priceNum || hotels[0].pricePerNight || parseInt(String(hotels[0].price).replace(/[^0-9]/g, '')) || 150;
         state.costs.hotel = priceNum * state.tripDays;
     }
 
@@ -1901,42 +2325,99 @@ function addMessage(role, content) {
 }
 
 async function processRefinement(message) {
-    // Show typing indicator
+    // Show typing indicator in chat
     const typingEl = document.createElement('div');
     typingEl.className = 'chat-message assistant typing';
-    typingEl.innerHTML = '<div class="message-bubble">✨ Thinking...</div>';
+    typingEl.innerHTML = '<div class="message-bubble">✨ Updating your itinerary...</div>';
     document.getElementById('chatMessages').appendChild(typingEl);
 
+    // Show loading overlay on itinerary panel
+    const itineraryLoading = document.getElementById('itineraryLoadingOverlay');
+    const loadingSubtext = document.getElementById('itineraryLoadingSubtext');
+    if (itineraryLoading) {
+        itineraryLoading.classList.add('visible');
+        // Cycle through loading messages
+        const loadingMessages = [
+            'Applying your changes',
+            'Analyzing your request',
+            'Crafting new activities',
+            'Almost there...'
+        ];
+        let msgIndex = 0;
+        const loadingInterval = setInterval(() => {
+            msgIndex = (msgIndex + 1) % loadingMessages.length;
+            if (loadingSubtext) loadingSubtext.textContent = loadingMessages[msgIndex];
+        }, 2000);
+        itineraryLoading.dataset.interval = loadingInterval;
+    }
+
     try {
-        // Call Gemini AI for intelligent response
-        const response = await GeminiService.refineItinerary(
+        // Call Gemini AI for intelligent modification
+        const result = await GeminiService.modifyItinerary(
             state.currentItinerary,
             message,
             state.chatHistory
         );
 
+        // Hide loading overlay
+        if (itineraryLoading) {
+            clearInterval(parseInt(itineraryLoading.dataset.interval));
+            itineraryLoading.classList.remove('visible');
+        }
+
         // Remove typing indicator
         typingEl.remove();
 
         // Add AI response
-        addMessage('assistant', response);
+        addMessage('assistant', result.response);
 
-        // Highlight some activities to show "changes"
-        const allActivityIds = [];
-        state.currentItinerary?.days?.forEach(day => {
-            ['morning', 'afternoon', 'evening'].forEach(slot => {
-                day.slots?.[slot]?.forEach(a => allActivityIds.push(a.id));
-            });
-        });
+        // Apply the changes if we got an updated itinerary
+        if (result.updatedItinerary) {
+            // Merge the updated itinerary with the current one
+            const updatedIt = result.updatedItinerary;
 
-        // Randomly highlight a few activities to show updates
-        const toHighlight = allActivityIds.slice(0, Math.min(3, allActivityIds.length));
-        if (toHighlight.length > 0) {
-            markUpdated(toHighlight);
+            // Update title and summary if provided
+            if (updatedIt.title) state.currentItinerary.title = updatedIt.title;
+            if (updatedIt.summary) state.currentItinerary.summary = updatedIt.summary;
+
+            // Update days if provided
+            if (updatedIt.days && updatedIt.days.length > 0) {
+                state.currentItinerary.days = updatedIt.days.map((day, i) => {
+                    const existingDay = state.currentItinerary.days[i] || {};
+                    return {
+                        name: day.name || existingDay.name,
+                        description: day.description || existingDay.description,
+                        slots: {
+                            morning: normalizeActivities(day.slots?.morning || existingDay.slots?.morning || []),
+                            afternoon: normalizeActivities(day.slots?.afternoon || existingDay.slots?.afternoon || []),
+                            evening: normalizeActivities(day.slots?.evening || existingDay.slots?.evening || [])
+                        }
+                    };
+                });
+            }
+
+            // Re-render everything
+            renderItinerary();
+            renderTripMap();
+            updateCosts();
+
+            // Flash the itinerary section to show update
+            const itSection = document.getElementById('itinerarySection');
+            itSection.classList.add('flash-update');
+            setTimeout(() => itSection.classList.remove('flash-update'), 1000);
+
+            console.log('✅ Itinerary updated from chat');
         }
 
     } catch (error) {
         console.error('AI refinement failed:', error);
+
+        // Hide loading overlay on error
+        if (itineraryLoading) {
+            clearInterval(parseInt(itineraryLoading.dataset.interval));
+            itineraryLoading.classList.remove('visible');
+        }
+
         typingEl.remove();
 
         // Fallback to simple responses
@@ -1944,18 +2425,40 @@ async function processRefinement(message) {
         let response = '';
 
         if (msg.includes('less busy') || msg.includes('lighter') || msg.includes('slower')) {
-            response = "Done! Made the itinerary more relaxed. 🧘";
+            response = "I'd make your itinerary more relaxed - try being more specific! 🧘";
         } else if (msg.includes('more food') || msg.includes('restaurant') || msg.includes('eating')) {
-            response = "Added more food spots! 🍽️";
+            response = "I'd add more food spots - try again in a moment! 🍽️";
         } else if (msg.includes('scenic') || msg.includes('photo')) {
-            response = "Highlighted more scenic spots! 📸";
+            response = "I'd highlight scenic spots - please try again! 📸";
         } else if (msg.includes('budget') || msg.includes('cheaper')) {
-            response = "Optimized for budget! 💰";
+            response = "I'd optimize for budget - please try again! 💰";
         } else {
-            response = `I'll update based on "${message}"! ✨`;
+            response = `I couldn't process "${message}" right now. Please try again! 🙏`;
         }
         addMessage('assistant', response);
     }
+}
+
+// Helper to normalize activity format from AI response
+function normalizeActivities(activities) {
+    if (!activities || !Array.isArray(activities)) return [];
+
+    return activities.map(a => ({
+        id: a.id || `activity_${Math.random().toString(36).substr(2, 9)}`,
+        name: a.name || a.title || 'Activity',
+        description: a.description || '',
+        duration: a.duration || '1-2 hours',
+        tags: a.tags || [a.category || 'Activity'],
+        area: a.area || a.location || '',
+        category: a.category || 'Activity',
+        priceLevel: a.priceLevel || a.cost || 'Free',
+        hours: a.hours || '',
+        goodFor: a.goodFor || ['Everyone'],
+        rating: a.rating || 4.0,
+        reviews: a.reviews || { positive: [], negative: [] },
+        coordinates: a.coordinates || null,
+        note: a.note || ''
+    }));
 }
 
 function markUpdated(ids) {

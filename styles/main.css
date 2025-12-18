@@ -304,9 +304,56 @@ body {
   margin-bottom: var(--space-4);
 }
 
-@media (max-width: 900px) {
+/* Panel that spans 2 columns for hotel preferences */
+.panel-tall {
+  grid-column: span 2;
+}
+
+/* Horizontal panel for Food & Diet */
+.horizontal-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.horizontal-panel .panel-header {
+  margin-bottom: var(--space-2);
+}
+
+.horizontal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.chip-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chip-section .input-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.chip-section .chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+@media (max-width: 1100px) {
   .panels-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .horizontal-chips {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -497,6 +544,86 @@ body {
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-primary);
+}
+
+/* ========== Preference Match Styles ========== */
+.pref-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-success);
+  background: rgba(90, 143, 106, 0.15);
+  border-radius: 12px;
+  margin: var(--space-1) 0;
+}
+
+.pref-badge.best {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), #e67e22);
+}
+
+.match-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 0.5625rem;
+  font-weight: 500;
+  color: var(--color-info);
+  background: rgba(90, 122, 159, 0.12);
+  border-radius: 4px;
+  margin-right: 4px;
+  margin-bottom: 2px;
+}
+
+.flight-match-reasons,
+.hotel-match-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: var(--space-1) 0;
+}
+
+.hotel-room-info {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.guest-voice {
+  font-size: 0.625rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-alt);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  margin: var(--space-1) 0;
+  border-left: 2px solid var(--color-primary);
+}
+
+.flight-card.best-match,
+.hotel-card.best-match {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(196, 92, 74, 0.15);
+}
+
+.flight-card.best-match::before,
+.hotel-card.best-match::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), #e67e22);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.hotel-card {
+  position: relative;
+}
+
+.flight-card {
+  position: relative;
 }
 
 /* ========== Day Tabs ========== */
@@ -1144,6 +1271,67 @@ body {
 .loading-subtext {
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
+}
+
+/* ========== Itinerary Loading Overlay ========== */
+.itinerary-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 248, 245, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(4px);
+}
+
+.itinerary-loading-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.itinerary-loading-spinner {
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-3);
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.itinerary-loading-text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.itinerary-loading-subtext {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.itinerary-panel {
+  position: relative;
 }
 
 /* ========== Utilities ========== */
@@ -1947,4 +2135,46 @@ select.input-field {
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 32px;
+}
+
+/* ========== Chat Update Animations ========== */
+@keyframes flash-update {
+  0% {
+    background-color: transparent;
+  }
+
+  20% {
+    background-color: rgba(90, 143, 106, 0.15);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.itinerary-section.flash-update {
+  animation: flash-update 1s ease-out;
+}
+
+.itinerary-section.flash-update .day-content.active {
+  animation: flash-update 1s ease-out;
+}
+
+/* Activity cards that are newly added or modified */
+.activity-card.new-activity {
+  border-color: var(--color-success);
+  background: rgba(90, 143, 106, 0.08);
+  animation: pulse-new 2s ease-in-out;
+}
+
+@keyframes pulse-new {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(90, 143, 106, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px rgba(90, 143, 106, 0.1);
+  }
 }

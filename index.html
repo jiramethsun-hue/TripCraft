@@ -155,14 +155,137 @@
           </div>
         </div>
 
-        <!-- Food & Diet -->
+        <!-- Flight Preferences -->
         <div class="panel">
           <div class="panel-header">
-            <span class="panel-icon">🍽️</span>
-            <h3 class="panel-title">Food & Diet</h3>
+            <span class="panel-icon">✈️</span>
+            <h3 class="panel-title">Flight Preferences</h3>
           </div>
           <div class="input-group mb-2">
-            <label class="input-label">Cuisine Interests</label>
+            <label class="input-label">Departure Time</label>
+            <div class="chip-group" id="flightTimeChips">
+              <button class="chip" data-value="early-morning">🌅 Early (5-8am)</button>
+              <button class="chip" data-value="morning">☀️ Morning</button>
+              <button class="chip" data-value="afternoon">🌤️ Afternoon</button>
+              <button class="chip" data-value="evening">🌆 Evening</button>
+              <button class="chip" data-value="late-night">🌙 Late Night</button>
+              <button class="chip" data-value="redeye">😴 Red-eye OK</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Seat Comfort</label>
+            <div class="chip-group single-select" id="flightSeatChips">
+              <button class="chip active" data-value="standard">🪑 Standard</button>
+              <button class="chip" data-value="extra-legroom">🦵 Extra Legroom</button>
+              <button class="chip" data-value="premium">💺 Premium Economy</button>
+              <button class="chip" data-value="business">🛋️ Business</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Luggage</label>
+            <div class="chip-group single-select" id="flightLuggageChips">
+              <button class="chip" data-value="carry-on">🎒 Carry-on Only</button>
+              <button class="chip active" data-value="1-checked">🧳 1 Checked Bag</button>
+              <button class="chip" data-value="2-checked">🧳🧳 2+ Bags</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">In-flight Must-Haves</label>
+            <div class="chip-group" id="flightAmenitiesChips">
+              <button class="chip" data-value="meals">🍽️ Meals</button>
+              <button class="chip" data-value="entertainment">🎬 Entertainment</button>
+              <button class="chip" data-value="wifi">📶 WiFi</button>
+              <button class="chip" data-value="power">🔌 Power Outlets</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Priority</label>
+            <div class="chip-group single-select" id="flightPriorityChips">
+              <button class="chip active" data-value="cheapest">💰 Cheapest</button>
+              <button class="chip" data-value="shortest">⏱️ Shortest</button>
+              <button class="chip" data-value="timing">🎯 Best Timing</button>
+              <button class="chip" data-value="overall">✨ Best Overall</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hotel Preferences -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-icon">🏨</span>
+            <h3 class="panel-title">Hotel Preferences</h3>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Room Size</label>
+            <div class="chip-group single-select" id="hotelRoomSizeChips">
+              <button class="chip" data-value="compact">🚪 Compact (&lt;15m²)</button>
+              <button class="chip active" data-value="standard">📐 Standard (15-20m²)</button>
+              <button class="chip" data-value="spacious">🏠 Spacious (20-25m²)</button>
+              <button class="chip" data-value="suite">🏰 Suite (25m²+)</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Bed Type</label>
+            <div class="chip-group" id="hotelBedTypeChips">
+              <button class="chip" data-value="single">🛏️ Single</button>
+              <button class="chip" data-value="twin">🛏️🛏️ Twin</button>
+              <button class="chip" data-value="double">👥 Double</button>
+              <button class="chip" data-value="queen">👑 Queen</button>
+              <button class="chip" data-value="king">🤴 King</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Location Priority</label>
+            <div class="chip-group" id="hotelLocationChips">
+              <button class="chip" data-value="metro">🚇 Near Metro</button>
+              <button class="chip" data-value="restaurants">🍜 Near Restaurants</button>
+              <button class="chip" data-value="center">🏙️ City Center</button>
+              <button class="chip" data-value="airport">✈️ Near Airport</button>
+              <button class="chip" data-value="train">🚄 Near Train</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Must-Have Amenities</label>
+            <div class="chip-group" id="hotelAmenitiesChips">
+              <button class="chip" data-value="luggage">🧳 Luggage Space</button>
+              <button class="chip" data-value="hairdryer">💨 Hairdryer</button>
+              <button class="chip" data-value="breakfast">🥐 Breakfast</button>
+              <button class="chip" data-value="bathtub">🛁 Bathtub</button>
+              <button class="chip" data-value="gym">💪 Gym</button>
+              <button class="chip" data-value="pool">🏊 Pool</button>
+              <button class="chip" data-value="workspace">💻 Workspace</button>
+            </div>
+          </div>
+          <div class="input-group mb-2">
+            <label class="input-label">Guest Review Focus</label>
+            <div class="chip-group" id="hotelReviewFocusChips">
+              <button class="chip" data-value="cleanliness">✨ Cleanliness</button>
+              <button class="chip" data-value="service">🙋 Service</button>
+              <button class="chip" data-value="value">💰 Value</button>
+              <button class="chip" data-value="quiet">🤫 Quiet</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Hotel Style</label>
+            <div class="chip-group" id="hotelStyleChips">
+              <button class="chip" data-value="business">🏨 Business</button>
+              <button class="chip" data-value="boutique">🎨 Boutique</button>
+              <button class="chip" data-value="traditional">🏯 Ryokan</button>
+              <button class="chip" data-value="apartment">🛋️ Apartment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Food & Diet - Horizontal Bar -->
+      <div class="horizontal-panel">
+        <div class="panel-header">
+          <span class="panel-icon">🍽️</span>
+          <h3 class="panel-title">Food & Diet</h3>
+        </div>
+        <div class="horizontal-chips">
+          <div class="chip-section">
+            <label class="input-label">Cuisine:</label>
             <div class="chip-group" id="cuisineChips">
               <button class="chip" data-value="local">🍱 Local</button>
               <button class="chip" data-value="street">🥟 Street Food</button>
@@ -170,39 +293,13 @@
               <button class="chip" data-value="cafe">☕ Cafés</button>
             </div>
           </div>
-          <div class="input-group">
-            <label class="input-label">Restrictions</label>
+          <div class="chip-section">
+            <label class="input-label">Restrictions:</label>
             <div class="chip-group" id="dietChips">
               <button class="chip" data-value="vegetarian">🥬 Vegetarian</button>
               <button class="chip" data-value="vegan">🌱 Vegan</button>
               <button class="chip" data-value="halal">🥩 Halal</button>
               <button class="chip" data-value="gluten-free">🌾 Gluten-Free</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Accommodation -->
-        <div class="panel">
-          <div class="panel-header">
-            <span class="panel-icon">🏨</span>
-            <h3 class="panel-title">Accommodation</h3>
-          </div>
-          <div class="input-group mb-2">
-            <label class="input-label">Type</label>
-            <div class="chip-group" id="accomTypeChips">
-              <button class="chip" data-value="hotel">🏨 Hotel</button>
-              <button class="chip" data-value="hostel">🛏️ Hostel</button>
-              <button class="chip" data-value="apartment">🏠 Apartment</button>
-              <button class="chip" data-value="traditional">🏯 Traditional</button>
-            </div>
-          </div>
-          <div class="input-group">
-            <label class="input-label">Location</label>
-            <div class="chip-group" id="accomLocChips">
-              <button class="chip" data-value="central">🏙️ Central</button>
-              <button class="chip" data-value="trendy">✨ Trendy Area</button>
-              <button class="chip" data-value="quiet">🌿 Quiet</button>
-              <button class="chip" data-value="transit">🚇 Near Transit</button>
             </div>
           </div>
         </div>
@@ -360,6 +457,12 @@
 
         <!-- Itinerary (Right Side) -->
         <div class="itinerary-panel">
+          <!-- Loading Overlay for AI Processing -->
+          <div class="itinerary-loading-overlay" id="itineraryLoadingOverlay">
+            <div class="itinerary-loading-spinner"></div>
+            <div class="itinerary-loading-text">✨ Updating your itinerary...</div>
+            <div class="itinerary-loading-subtext" id="itineraryLoadingSubtext">Applying your changes</div>
+          </div>
           <div class="day-tabs" id="dayTabs"></div>
           <div id="dayContents"></div>
         </div>
@@ -465,9 +568,10 @@
   <!-- Leaflet.js library -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="scripts/config.js?v=8"></script>
-  <script src="scripts/gemini-service.js?v=8"></script>
-  <script src="scripts/app.js?v=8"></script>
+  <script src="scripts/config.js?v=9"></script>
+  <script src="scripts/gemini-service.js?v=9"></script>
+  <script src="scripts/unsplash-service.js?v=9"></script>
+  <script src="scripts/app.js?v=9"></script>
 </body>
 
 </html>
