@@ -2178,3 +2178,35 @@ select.input-field {
     box-shadow: 0 0 0 4px rgba(90, 143, 106, 0.1);
   }
 }
+
+/* ========== Booking Buttons ========== */
+.book-btn {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #4f46e5 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.book-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.flight-card .book-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.hotel-card .book-btn {
+  background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+}

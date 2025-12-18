@@ -1649,6 +1649,10 @@ function renderFlights() {
                 ${(flight.pros || []).map(p => `<span class="flight-pro">✓ ${p}</span>`).join('')}
                 ${(flight.cons || []).map(c => `<span class="flight-con">✗ ${c}</span>`).join('')}
             </div>
+            <a href="https://www.google.com/travel/flights?q=flights+to+${encodeURIComponent(state.destination || 'Japan')}" 
+               target="_blank" rel="noopener" class="book-btn" onclick="event.stopPropagation()">
+                🔗 Search on Google Flights
+            </a>
         </div>
     `}).join('');
 
@@ -2056,6 +2060,10 @@ function renderHotels() {
             ${pros.map(p => `<span class="hotel-pro">✓ ${p}</span>`).join('')}
             ${cons.map(c => `<span class="hotel-con">✗ ${c}</span>`).join('')}
           </div>
+          <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(state.destination || 'Japan')}" 
+             target="_blank" rel="noopener" class="book-btn" onclick="event.stopPropagation()">
+              🔗 Search on Booking.com
+          </a>
         </div>
       `;
     }).join('');
