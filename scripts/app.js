@@ -254,6 +254,28 @@ const hotelData = {
                 concerns: ['Basic decor but functional'],
                 topReview: '⭐ "Reliable and affordable" - verified guest'
             }
+        },
+        {
+            id: 'hotel3',
+            name: 'Budget Stay Hostel',
+            type: 'Budget',
+            location: 'Near Station',
+            price: '$45/night',
+            priceNum: 45,
+            rating: 4.1,
+            image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop',
+            features: ['Great value', 'Social atmosphere', 'Near transport'],
+            roomSize: 'compact',
+            bedTypes: ['single', 'bunk'],
+            locationTags: ['train', 'metro'],
+            amenities: ['luggage', 'wifi'],
+            reviewHighlights: ['value', 'location'],
+            style: 'hostel',
+            guestVoice: {
+                positive: ['Amazing value for money', 'Met great people'],
+                concerns: ['Shared facilities'],
+                topReview: '⭐ "Best budget option!" - verified guest'
+            }
         }
     ]
 };
@@ -379,6 +401,38 @@ const flightData = {
             seatType: 'standard',
             luggage: '1-checked',
             amenities: ['meals'],
+            matchScore: 0
+        },
+        {
+            id: 'flight2',
+            airline: 'Budget Airline',
+            price: 450,
+            duration: '15h',
+            stops: '1 stop',
+            departure: '6:00 AM',
+            arrival: '9:00 PM',
+            pros: ['Best price'],
+            cons: ['Layover', 'Early departure'],
+            departureSlot: 'early-morning',
+            seatType: 'standard',
+            luggage: '1-checked',
+            amenities: ['meals'],
+            matchScore: 0
+        },
+        {
+            id: 'flight3',
+            airline: 'Premium Airlines',
+            price: 950,
+            duration: '10h',
+            stops: 'Direct',
+            departure: '2:00 PM',
+            arrival: '12:00 AM +1',
+            pros: ['Fastest', 'Premium service', 'Great meals'],
+            cons: ['Higher price'],
+            departureSlot: 'afternoon',
+            seatType: 'extra-legroom',
+            luggage: '2-checked',
+            amenities: ['meals', 'entertainment', 'wifi', 'power'],
             matchScore: 0
         }
     ]
