@@ -1651,7 +1651,7 @@ function renderFlights() {
             </div>
             <a href="https://www.google.com/travel/flights?q=flights+to+${encodeURIComponent(state.destination || 'Japan')}" 
                target="_blank" rel="noopener" class="book-btn" onclick="event.stopPropagation()">
-                🔗 Search on Google Flights
+                ✈️ View on Google Flights
             </a>
         </div>
     `}).join('');
@@ -2062,7 +2062,7 @@ function renderHotels() {
           </div>
           <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(state.destination || 'Japan')}" 
              target="_blank" rel="noopener" class="book-btn" onclick="event.stopPropagation()">
-              🔗 Search on Booking.com
+              🏨 Book on Booking.com
           </a>
         </div>
       `;
