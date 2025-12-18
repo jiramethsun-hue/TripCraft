@@ -161,20 +161,29 @@ const UnsplashService = {
 
     /**
      * Update activity images in the DOM after fetching
+     * Also stores the URL in the activity object so it persists across re-renders
      * @param {Array} activities - Array of activity objects
      * @param {string} destination - Trip destination
      */
     async updateActivityImages(activities, destination) {
         const queries = activities.map(a => ({
             id: a.id,
+            activity: a, // Keep reference to update imageUrl
             query: this.buildActivityQuery(a, destination),
             fallback: a.imageUrl || activityTypeImages[a.category?.toLowerCase()] || activityTypeImages.default
         }));
 
         const photos = await this.getBatchPhotos(queries);
 
-        // Update DOM
+        // Update DOM AND save to activity object for persistence
         photos.forEach((url, id) => {
+            // Find the activity and save the URL to it
+            const activity = activities.find(a => a.id === id);
+            if (activity && url) {
+                activity.imageUrl = url; // Save to activity object for re-renders
+            }
+
+            // Update DOM
             const card = document.querySelector(`.activity-card[data-id="${id}"] .activity-image img`);
             if (card && url) {
                 card.src = url;
@@ -184,6 +193,7 @@ const UnsplashService = {
 
     /**
      * Update hotel images in the DOM after fetching
+     * Also stores the URL in the hotel object so it persists across re-renders
      * @param {Array} hotels - Array of hotel objects  
      * @param {string} destination - Trip destination
      */
@@ -196,8 +206,15 @@ const UnsplashService = {
 
         const photos = await this.getBatchPhotos(queries);
 
-        // Update DOM
+        // Update DOM AND save to hotel object for persistence
         photos.forEach((url, id) => {
+            // Find the hotel and save the URL to it
+            const hotel = hotels.find(h => h.id === id);
+            if (hotel && url) {
+                hotel.image = url; // Save to hotel object for re-renders
+            }
+
+            // Update DOM
             const card = document.querySelector(`.hotel-card[data-id="${id}"] .hotel-image img`);
             if (card && url) {
                 card.src = url;
