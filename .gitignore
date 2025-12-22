@@ -3,6 +3,9 @@
 .env.local
 .env.*.local
 
+# Config file with API keys (use config.example.js as template)
+scripts/config.js
+
 # Backups
 backups/
 
