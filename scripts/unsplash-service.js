@@ -105,34 +105,66 @@ const UnsplashService = {
     buildActivityQuery(activity, destination) {
         const city = destination?.split(',')[0]?.trim() || '';
         const name = activity.name || activity.title || '';
+        const location = activity.location || activity.area || '';
 
         // Clean up common prefixes/suffixes for better search
         const cleanName = name
-            .replace(/^(Visit|Explore|Tour|See|Experience)\s+/i, '')
+            .replace(/^(Visit|Explore|Tour|See|Experience|Morning in|Afternoon at|Evening at|Lunch at|Dinner at)\s+/i, '')
             .replace(/\s+(Visit|Tour|Experience)$/i, '')
+            .replace(/\s*\([^)]*\)/g, '') // Remove parenthetical notes
             .trim();
 
-        // For specific place names (temples, shrines, landmarks), search directly
+        // Country mapping for better search context
+        const countryMap = {
+            'tokyo': 'Japan', 'osaka': 'Japan', 'kyoto': 'Japan', 'nara': 'Japan',
+            'paris': 'France', 'lyon': 'France', 'nice': 'France',
+            'london': 'UK', 'manchester': 'UK', 'edinburgh': 'Scotland',
+            'rome': 'Italy', 'milan': 'Italy', 'venice': 'Italy', 'florence': 'Italy',
+            'barcelona': 'Spain', 'madrid': 'Spain',
+            'bangkok': 'Thailand', 'phuket': 'Thailand', 'chiang mai': 'Thailand',
+            'seoul': 'Korea', 'busan': 'Korea',
+            'singapore': 'Singapore',
+            'bali': 'Indonesia', 'jakarta': 'Indonesia',
+            'copenhagen': 'Denmark', 'stockholm': 'Sweden', 'oslo': 'Norway',
+            'amsterdam': 'Netherlands', 'berlin': 'Germany', 'munich': 'Germany',
+            'vienna': 'Austria', 'zurich': 'Switzerland', 'prague': 'Czech Republic',
+            'lisbon': 'Portugal', 'dublin': 'Ireland', 'athens': 'Greece',
+            'new york': 'USA', 'los angeles': 'USA', 'san francisco': 'USA'
+        };
+        const country = countryMap[city.toLowerCase()] || '';
+
+        // For specific place names (temples, shrines, landmarks), search directly with city
         const landmarkKeywords = ['temple', 'shrine', 'tower', 'palace', 'castle', 'museum', 'garden',
-            'park', 'market', 'station', 'bridge', 'street', 'district'];
+            'park', 'market', 'station', 'bridge', 'street', 'district', 'square', 'cathedral',
+            'mosque', 'church', 'monument', 'statue', 'beach', 'hill', 'mountain', 'lake', 'river'];
         const isLandmark = landmarkKeywords.some(l => cleanName.toLowerCase().includes(l));
 
-        // If it looks like a specific place, search for it directly
-        if (isLandmark || cleanName.includes('-') || /[A-Z]/.test(cleanName.charAt(0))) {
-            return `${cleanName} ${city}`.trim();
+        // If it's a specific landmark or proper noun, search for it directly
+        if (isLandmark || /^[A-Z]/.test(cleanName)) {
+            // Use the actual name + city for landmarks
+            return `${cleanName} ${city} ${country}`.trim();
         }
 
-        // For generic activities (food, shopping), combine category with city
-        const category = activity.category || activity.type || '';
-        if (category.toLowerCase().includes('food') || category.toLowerCase().includes('restaurant')) {
-            return `${city} local cuisine food`;
-        }
-        if (category.toLowerCase().includes('shopping')) {
-            return `${city} shopping street`;
+        // Handle food/restaurant activities
+        const category = (activity.category || activity.type || '').toLowerCase();
+        if (category.includes('food') || category.includes('restaurant') ||
+            cleanName.toLowerCase().includes('lunch') || cleanName.toLowerCase().includes('dinner') ||
+            cleanName.toLowerCase().includes('breakfast')) {
+            return `${city} ${country} local food restaurant cuisine`.trim();
         }
 
-        // Default: use name with city
-        return `${cleanName} ${city}`.trim();
+        // Handle shopping
+        if (category.includes('shopping') || cleanName.toLowerCase().includes('shopping')) {
+            return `${city} ${country} shopping street market`.trim();
+        }
+
+        // Handle nature/outdoor
+        if (category.includes('nature') || category.includes('outdoor')) {
+            return `${city} ${country} nature scenery landscape`.trim();
+        }
+
+        // Default: use the actual name from AI with city and country
+        return `${cleanName} ${city} ${country}`.trim();
     },
 
     /**
@@ -143,20 +175,41 @@ const UnsplashService = {
      */
     buildHotelQuery(hotel, destination) {
         const city = destination?.split(',')[0]?.trim() || '';
+        const hotelName = hotel.name || '';
         const type = hotel.type || 'hotel';
 
-        // For specific hotel types, search for that style
-        if (type.toLowerCase().includes('ryokan') || type.toLowerCase().includes('traditional')) {
-            return `traditional japanese ryokan ${city}`;
-        }
-        if (type.toLowerCase().includes('hostel')) {
-            return `modern hostel interior`;
-        }
-        if (type.toLowerCase().includes('luxury')) {
-            return `luxury hotel room ${city}`;
+        // Country mapping for context
+        const countryMap = {
+            'tokyo': 'Japan', 'osaka': 'Japan', 'kyoto': 'Japan', 'nara': 'Japan',
+            'paris': 'France', 'london': 'UK', 'rome': 'Italy', 'barcelona': 'Spain',
+            'bangkok': 'Thailand', 'seoul': 'Korea', 'singapore': 'Singapore',
+            'copenhagen': 'Denmark', 'amsterdam': 'Netherlands', 'berlin': 'Germany',
+            'new york': 'USA', 'los angeles': 'USA'
+        };
+        const country = countryMap[city.toLowerCase()] || '';
+
+        // If hotel name looks like a real hotel (has multiple words, not just "Budget Stay")
+        if (hotelName && !hotelName.includes('Budget Stay') && !hotelName.includes('Boutique Hotel') && !hotelName.includes('Luxury Resort')) {
+            // Search by actual hotel name - this works best for real hotels
+            return `${hotelName} hotel ${country}`.trim();
         }
 
-        return `${type} hotel ${city}`;
+        // For specific hotel types, search for that style with location
+        if (type.toLowerCase().includes('ryokan') || type.toLowerCase().includes('traditional')) {
+            return `japanese ryokan interior ${city}`;
+        }
+        if (type.toLowerCase().includes('hostel')) {
+            return `hostel room interior ${city} ${country}`.trim();
+        }
+        if (type.toLowerCase().includes('luxury')) {
+            return `luxury hotel lobby ${city} ${country}`.trim();
+        }
+        if (type.toLowerCase().includes('boutique')) {
+            return `boutique hotel room ${city} ${country}`.trim();
+        }
+
+        // Default with location context
+        return `hotel room interior ${city} ${country}`.trim();
     },
 
     /**

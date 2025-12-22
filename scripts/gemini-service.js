@@ -166,9 +166,9 @@ Return JSON:
                     days: days,
                     estimatedCosts: { flights: 800, hotels: 450, activities: 150, meals: 200, transport: 100 },
                     hotels: [
-                        { id: 'h1', name: `${dest} Budget Stay`, type: 'Budget', location: 'Near Station', pricePerNight: 80, rating: 4.0, features: ['Central', 'Clean'], image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
-                        { id: 'h2', name: `${dest} Boutique Hotel`, type: 'Boutique', location: 'City Center', pricePerNight: 150, rating: 4.4, features: ['Stylish', 'Breakfast'], image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop' },
-                        { id: 'h3', name: `${dest} Luxury Resort`, type: 'Luxury', location: 'Prime Area', pricePerNight: 300, rating: 4.8, features: ['Spa', 'Views', 'Pool'], image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop' }
+                        { id: 'h1', name: `${dest} Budget Stay`, type: 'Budget', location: 'Near Station', pricePerNight: 80, rating: 4.0, features: ['Central', 'Clean'] },
+                        { id: 'h2', name: `${dest} Boutique Hotel`, type: 'Boutique', location: 'City Center', pricePerNight: 150, rating: 4.4, features: ['Stylish', 'Breakfast'] },
+                        { id: 'h3', name: `${dest} Luxury Resort`, type: 'Luxury', location: 'Prime Area', pricePerNight: 300, rating: 4.8, features: ['Spa', 'Views', 'Pool'] }
                     ],
                     flights: [
                         { id: 'f1', airline: 'Budget Airways', price: 500, duration: '15h', stops: '1 stop', departure: '08:00', arrival: '23:00', pros: ['Best price'], cons: ['Layover'] },
@@ -212,9 +212,9 @@ Return JSON:
                 days: days,
                 estimatedCosts: { flights: 800, hotels: 450, activities: 150, meals: 200, transport: 100 },
                 hotels: [
-                    { id: 'h1', name: `${dest} Budget Stay`, type: 'Budget', location: 'Near Station', pricePerNight: 80, rating: 4.0, features: ['Central', 'Clean'], image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
-                    { id: 'h2', name: `${dest} Boutique Hotel`, type: 'Boutique', location: 'City Center', pricePerNight: 150, rating: 4.4, features: ['Stylish', 'Breakfast'], image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop' },
-                    { id: 'h3', name: `${dest} Luxury Resort`, type: 'Luxury', location: 'Prime Area', pricePerNight: 300, rating: 4.8, features: ['Spa', 'Views', 'Pool'], image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop' }
+                    { id: 'h1', name: `${dest} Budget Stay`, type: 'Budget', location: 'Near Station', pricePerNight: 80, rating: 4.0, features: ['Central', 'Clean'] },
+                    { id: 'h2', name: `${dest} Boutique Hotel`, type: 'Boutique', location: 'City Center', pricePerNight: 150, rating: 4.4, features: ['Stylish', 'Breakfast'] },
+                    { id: 'h3', name: `${dest} Luxury Resort`, type: 'Luxury', location: 'Prime Area', pricePerNight: 300, rating: 4.8, features: ['Spa', 'Views', 'Pool'] }
                 ],
                 flights: [
                     { id: 'f1', airline: 'Budget Airways', price: 500, duration: '15h', stops: '1 stop', departure: '08:00', arrival: '23:00', pros: ['Best price'], cons: ['Layover'] },

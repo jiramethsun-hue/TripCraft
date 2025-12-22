@@ -1403,23 +1403,41 @@ function convertAIItineraryToFormat(aiItinerary) {
         const afternoon = [];
         const evening = [];
 
-        activities.forEach((a, idx) => {
-            const hour = parseHour(a.time);
+        // Sort activities by time first to ensure correct ordering
+        const sortedActivities = [...activities].sort((a, b) => {
+            const hourA = parseHour(a.time);
+            const hourB = parseHour(b.time);
+            if (hourA === -1 && hourB === -1) return 0;
+            if (hourA === -1) return 1;
+            if (hourB === -1) return -1;
+            return hourA - hourB;
+        });
 
-            if (hour >= 0 && hour < 12) {
-                morning.push(a);
-            } else if (hour >= 12 && hour < 17) {
-                afternoon.push(a);
-            } else if (hour >= 17) {
+        sortedActivities.forEach((a, idx) => {
+            const hour = parseHour(a.time);
+            const title = (a.title || a.name || '').toLowerCase();
+
+            // Check if it's a dinner/evening activity by keyword
+            const isDinner = title.includes('dinner') || title.includes('evening') || title.includes('night') || title.includes('bar');
+            const isLunch = title.includes('lunch') || title.includes('midday');
+            const isBreakfast = title.includes('breakfast') || title.includes('morning');
+
+            // Use keywords to override time if needed
+            if (isDinner || hour >= 17) {
                 evening.push(a);
+            } else if (isLunch || (hour >= 12 && hour < 17)) {
+                afternoon.push(a);
+            } else if (isBreakfast || (hour >= 0 && hour < 12)) {
+                morning.push(a);
             } else {
-                // If no valid time, distribute based on activity index
-                if (idx === 0) {
+                // If no valid time or keywords, distribute based on position
+                const totalActivities = sortedActivities.length;
+                if (idx < totalActivities / 3) {
                     morning.push(a);
-                } else if (idx === activities.length - 1 && activities.length > 2) {
-                    evening.push(a);
-                } else {
+                } else if (idx < (totalActivities * 2) / 3) {
                     afternoon.push(a);
+                } else {
+                    evening.push(a);
                 }
             }
         });
